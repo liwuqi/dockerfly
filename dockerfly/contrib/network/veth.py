@@ -44,7 +44,7 @@ class MacvlanEth(VEth):
     """
 
     def __init__(self, name, ip, link_to):
-        super(MacvlanEth).__init__(self, name, ip, link_to)
+        super(MacvlanEth, self).__init__(name, ip, link_to)
         self._is_attach_to_container = False
         self._attach_to_container_pid = None
 
