@@ -9,16 +9,18 @@ from .libs import getpid
 
 class Container(object):
 
-    def __init__(self, image_name, veths):
+    def __init__(self, image_name, veths, gateway):
         """create basic container, waiting running
 
         Args:
             image_name: docker image name
             veths: virtual eths, [('em0v0', 'em0'), ('em1v1', 'em1')... )],
-                   the first eth will be default gateway for container
+                   !!!notify!!!:
+                        the first eth will be default gateway for container
         """
         self._image_name = image_name
         self._veths = veths
+        self._gateway = gateway
         self._container_name = "dockerfly_%s_%s" % (self._image_name, str(int(time.time())))
 
     def run(self, run_cmd, *args):
@@ -32,8 +34,14 @@ class Container(object):
         docker('run', '--privileged', '--name', self._container_name,
                 args, self._image_name, run_cmd)
 
-        for veth, link_to, ip_netmask in self._veths:
+        for index, (veth, link_to, ip_netmask) in self._veths:
             macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
-            macvlan_eth.attach_to_container(getpid(self._container_name))
+
+            if index == 0:
+                macvlan_eth.attach_to_container(getpid(self._container_name),
+                                                is_route=True, gateway=self._gateway)
+            else:
+                macvlan_eth.attach_to_container(getpid(self._container_name))
+
 
 
