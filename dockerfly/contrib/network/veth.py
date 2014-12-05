@@ -82,12 +82,12 @@ class MacvlanEth(VEth):
 
         ip('link', 'set', 'netns', self._attach_to_container_pid, self._veth_name)
         nsenter('-t', self._attach_to_container_pid,
-                '-n', 'ip', 'addr', 'add', self._ip_netmask, 'bridge')
-        nsenter('-t', self._attach_to_container_pid,
                 '-n', 'ip', 'link', 'set', self._veth_name, 'up')
+        nsenter('-t', self._attach_to_container_pid,
+                '-n', 'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
 
         if is_route:
-            if gateway:
+            if not gateway:
                 raise ValueError("Please set the gateway for %s" % self._veth_name)
             else:
                 nsenter('-t', self._attach_to_container_pid,
