@@ -3,6 +3,7 @@
 
 import time
 import docker as dockerpy
+from datetime import datetime
 
 from dockerfly.contrib.network.veth import MacvlanEth
 from dockerfly.contrib.dockerlib.libs import run_in_process
@@ -27,7 +28,7 @@ class Container(object):
             container_id
         """
         container_name = "dockerfly_%s_%s" % (image_name.replace(':','_'),
-                                              str(int(time.time())))
+                                              datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S'))
         container = cls.docker_cli.create_container(image=image_name,
                                                     command=run_cmd,
                                                     name=container_name)
