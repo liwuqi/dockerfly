@@ -13,23 +13,21 @@ class TestContainer(unittest.TestCase):
 
     def setUp(self):
         super(TestContainer, self).setUp()
-        self._container = Container('centos:centos6',
-                                    [
-                                        ('testDockerflyv0', 'eth0', '192.168.159.10/24'),
-                                        ('testDockerflyv1', 'eth0', '192.168.159.11/24'),
-                                        ('testDockerflyv2', 'eth0', '192.168.159.12/24')
-                                    ],
-                                    '192.168.159.2'
-                                )
-        self._container.create('/bin/sleep 30')
-
     def test_run_stop_container(self):
-        self._container.run()
+        container_id = Container.run('centos:centos6',
+                                     '/bin/sleep 30',
+                                      [
+                                         ('testDockerflyv0', 'eth0', '192.168.159.10/24'),
+                                         ('testDockerflyv1', 'eth0', '192.168.159.11/24'),
+                                         ('testDockerflyv2', 'eth0', '192.168.159.12/24')
+                                      ],
+                                      '192.168.159.2'
+                                     )
+
         time.sleep(5)
-        self.assertTrue(self._container.get_id() in get_all_containers_id())
-        self._container.stop()
+        self.assertTrue(container_id in get_all_containers_id())
+        Container.remove(container_id)
 
     def tearDown(self):
-        self._container.remove()
         super(TestContainer, self).tearDown()
 

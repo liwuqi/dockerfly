@@ -1,16 +1,16 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
-import threading
+from multiprocessing.pool import ThreadPool
 import docker as dockerpy
 
 docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
 
-def run_in_thread(fn):
-    def run(*k, **kw):
-        t = threading.Thread(target=fn, args=k, kwargs=kw)
-        t.start()
-        return t
+def run_in_process(fn):
+    def run(*k):
+        pool = ThreadPool(processes=1)
+        async_result = pool.apply_async(fn, k)
+        return async_result.get()
     return run
 
 

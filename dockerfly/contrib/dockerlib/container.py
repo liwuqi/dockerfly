@@ -5,12 +5,16 @@ import time
 import docker as dockerpy
 
 from dockerfly.contrib.network.veth import MacvlanEth
-from dockerfly.contrib.dockerlib.libs import run_in_thread, get_all_containers_id
+from dockerfly.contrib.dockerlib.libs import run_in_process
 
 class Container(object):
 
-    def __init__(self, image_name, veths, gateway):
-        """create basic container, waiting running
+    docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
+
+    @classmethod
+    @run_in_process
+    def run(cls, image_name, run_cmd, veths, gateway):
+        """create basic container, then running
 
         Args:
             image_name: docker image name
@@ -19,59 +23,37 @@ class Container(object):
 
                    !!!notify!!!:
                    the first eth will be assigned to the default gateway for container
+        Return:
+            container_id
         """
-        self._image_name = image_name
-        self._veths = veths
-        self._veth_insts = []
-        self._gateway = gateway
-        self._docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
+        container_name = "dockerfly_%s_%s" % (image_name.replace(':','_'),
+                                              str(int(time.time())))
+        container = cls.docker_cli.create_container(image=image_name,
+                                                    command=run_cmd,
+                                                    name=container_name)
+        container_id = container.get('Id')
 
-        self._container_name = "dockerfly_%s_%s" % (self._image_name.replace(':','_'),
-                                                    str(int(time.time())))
-        self._container = None
+        cls.docker_cli.start(container=container_id, privileged=True)
 
-    def create(self, run_cmd):
-        """create continer by run_cmd"""
-        self._container = self._docker_cli.create_container(image=self._image_name,
-                                                            command=run_cmd,
-                                                            name=self._container_name)
-
-    @run_in_thread
-    def run(self):
-        """ start container
-
-        Steps:
-            run continer
-            create virtual eths
-            set eths attach to comtainer
-        """
-        self._docker_cli.start(container=self._container.get('Id'), privileged=True)
-
-        for index, (veth, link_to, ip_netmask) in enumerate(self._veths):
+        for index, (veth, link_to, ip_netmask) in enumerate(veths):
             macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
-            container_pid = self.get_pid()
+            container_pid = cls.docker_cli.inspect_container(container_id)['State']['Pid']
 
             if index == 0:
                 macvlan_eth.attach_to_container(container_pid,
-                                                is_route=True, gateway=self._gateway)
+                                                is_route=True, gateway=gateway)
             else:
                 macvlan_eth.attach_to_container(container_pid)
-            self._veth_insts.append(macvlan_eth)
 
-    def stop(self):
-        """stop continer"""
-        self._docker_cli.stop(self._container.get('Id'))
+        return container_id
 
-    def remove(self, force=False):
+    @classmethod
+    def remove(cls, container_id):
         """remove eths and continer"""
-        if force:
-            self._docker_cli.stop(self._container.get('Id'))
+        cls.docker_cli.stop(container_id)
+        cls.docker_cli.remove_container(container_id)
 
-        self._docker_cli.remove_container(self._container.get('Id'))
-
-    def get_id(self):
-        return self._container.get('Id')
-
-    def get_pid(self):
-        return self._docker_cli.inspect_container(self.get_id())['State']['Pid']
+    @classmethod
+    def get_pid(cls, container_id):
+        return cls.docker_cli.inspect_container(container_id)['State']['Pid']
 
