@@ -27,7 +27,7 @@ class Container(object):
         Return:
             container_id
         """
-        container_name = "dockerfly_%s_%s" % (image_name.replace(':','_'),
+        container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
                                               datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S'))
         container = cls.docker_cli.create_container(image=image_name,
                                                     command=run_cmd,
