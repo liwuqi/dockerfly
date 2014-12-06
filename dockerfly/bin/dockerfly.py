@@ -74,7 +74,7 @@ if __name__ == '__main__':
     if arguments['exec']:
         container_pid = docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
         def process_output(line):
-                print(line)
+                sys.stdout.write(line)
 
         p = nsenter('-t', container_pid,
                     '-n', arguments['<cmd>'].split(), _out=process_output)
