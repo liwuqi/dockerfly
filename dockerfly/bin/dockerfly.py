@@ -5,9 +5,10 @@
 
 Usage:
   dockerfly.py ps
-  dockerfly.py gen <config_json>
-  dockerfly.py run <config_json>
-  dockerfly.py get <container_id>
+  dockerfly.py gen      <config_json>
+  dockerfly.py run      <config_json>
+  dockerfly.py kill     <config_json>
+  dockerfly.py get      <container_id>
 
 Options:
   -h --help             Show this screen.
@@ -41,12 +42,11 @@ if __name__ == '__main__':
 
     container_json_exp = [{
             'image_name':'centos:centos6',
-            'run_cmd': '/bin/sleep 30',
+            'run_cmd': '/bin/sleep 300',
             'eths':
             [
                ('testDockerflyv0', 'eth0', '192.168.159.10/24'),
                ('testDockerflyv1', 'eth0', '192.168.159.11/24'),
-               ('testDockerflyv2', 'eth0', '192.168.159.12/24')
             ],
             'gateway':'192.168.159.2'
         }]
@@ -62,11 +62,15 @@ if __name__ == '__main__':
         with open(arguments['<config_json>'], 'r') as config:
             container_json = json.load(config, encoding='utf-8')
             for container in container_json:
-                Container.run(container['image_name'],
-                              container['run_cmd'],
-                              container['eths'],
-                              container['gateway']
-                            )
+                container_id = Container.run(container['image_name'],
+                                             container['run_cmd'],
+                                             container['eths'],
+                                             container['gateway']
+                                        )
+                print "Container running:ContainerId(%s) Pid(%s)" %(container_id,
+                                 docker_cli.inspect_container(container_id)['State']['Pid']
+                        )
+
     if arguments['kill']:
         Container.remove(arguments['<container_id>'])
 
