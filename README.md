@@ -114,3 +114,52 @@ exec `docker ps`, you can find:
     ```
 
 now you can visit `http://192.168.159.10` in Physical HostA.
+
+Best Practice:
+========================
+
+dockerfly help you to create containers which shared local network by physical hosts, so the easiest way to use dockerfly is to create a container with ssd service.Then you can visit the container as the same as normal virtual machine.
+
+steps:
+
+* pull a sshd image
+    ```
+    docker pull docker.cn/memorybox/centos6_sshd
+    ```
+this is a clean image with sshd service and the default user/password is `root:rootroot`
+
+* start the container by dockerfly:
+
+    * create a config file: `dockerfly gen centos6_sshd.json`, modify to:
+
+    [
+        {
+            "gateway": "192.168.159.2",
+            "eths": [
+                [
+                    "testDockerflyv0",
+                    "eth0",
+                    "192.168.159.10/24"
+                ],
+                [
+                    "testDockerflyv1",
+                    "eth0",
+                    "192.168.159.11/24"
+                ]
+            ],
+            "image_name": "docker.cn/memorybox/centos6_sshd",
+            "run_cmd": "/run.sh"
+        }
+    ]
+
+    * start container: `dockerfly run centos6_sshd.json`
+
+* now you can exec `ssh 192.168.159.10` to connect container in PhysicalHostA.
+
+Caveats
+========================
+enable sshd service in docker is unsafe, see here:
+
+    ihttp://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
+
+but different people use Docker for different purposes, so  **Don't be afraid, but be careful.**
