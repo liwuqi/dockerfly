@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import os
+import sys
 from setuptools import setup, find_packages
 
 py_version = sys.version_info[:2]
@@ -53,4 +53,15 @@ setup(
     include_package_data = True,
     platforms = 'any',
     install_requires=requires,
+    extras_require={
+        'sh':['sh >= 1.09'],
+        'docker-py':['docker-py >= 0.6.0'],
+        'docopt':['docopt >= 0.6.1'],
+        'testing':testing_extras,
+        },
+    entry_points={
+     'console_scripts': [
+         'dockerfly = dockerfly.bin:dockerfly',
+        ],
+    },
 )
