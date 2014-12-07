@@ -59,7 +59,7 @@ How to use:
 * generate a sample config json:
 
     ```
-    dockerfly gen centos6.json
+    dockerflyctl gen centos6.json
     ```
 
 you'll get a sample config, cenos6.json:
@@ -93,7 +93,7 @@ this means:
 * start this container:
 
     ```
-     dockerfly.py run centos6.json
+     dockerflyctl run centos6.json
     ```
 output:
 
@@ -156,7 +156,7 @@ this is a clean image with sshd service and the default user/password is `root:r
     ]
     ```
 
-    * start container: `dockerfly run centos6_sshd.json`
+    * start container: `dockerflyctl run centos6_sshd.json`
 
 * now you can exec `ssh 192.168.159.10` to connect container in PhysicalHostA.
 
