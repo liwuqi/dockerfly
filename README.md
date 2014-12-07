@@ -40,7 +40,7 @@ PING 192.168.159.2 (192.168.1.10) 56(84) bytes of data.
 Install:
 ========================
 
-* Linux and Docker. We've tested with Docker versions 1.1.0 through 1.3.1, but other versions should work too. Linux kernels after 3.5 are known to work; the newer the better.
+* Linux and Docker. I have tested with Docker versions 1.1.0 through 1.3.1, but other versions should work too. Linux kernels after 3.5 are known to work; the newer the better.
 
 * [nsenter](https://github.com/jpetazzo/nsenter):
 
