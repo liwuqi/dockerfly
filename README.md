@@ -64,6 +64,7 @@ How to use:
 
 you'll get a sample config, cenos6.json:
 
+    ```
     [
         {
             "gateway": "192.168.159.2",
@@ -83,11 +84,10 @@ you'll get a sample config, cenos6.json:
             "run_cmd": "/bin/sleep 300"
         }
     ]
+    ```
 
 this means:
-
     * you will create a container with two macvlan eths(testDockerflyv0:192.168.159.10/24, testDockerflyv1:192.168.159.11/24), the eths will link to eth0
-
     * the container's image name is centos:centos6
 
 * start this container:
@@ -132,6 +132,7 @@ this is a clean image with sshd service and the default user/password is `root:r
 
     * create a config file: `dockerfly gen centos6_sshd.json`, modify to:
 
+    ```
     [
         {
             "gateway": "192.168.159.2",
@@ -151,6 +152,7 @@ this is a clean image with sshd service and the default user/password is `root:r
             "run_cmd": "/run.sh"
         }
     ]
+    ```
 
     * start container: `dockerfly run centos6_sshd.json`
 
