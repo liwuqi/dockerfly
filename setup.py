@@ -11,7 +11,8 @@ if py_version < (2, 6):
 elif (3, 0) < py_version < (3, 2):
     raise RuntimeError('On Python 3, dockerfly requires Python 3.2 or later')
 
-requires = ['meld3 >= 1.0.0']
+requires = ['sh >= 1.09', 'docker-py >= 0.6.0', 'docopt >= 0.6.1']
+
 tests_require = []
 if py_version < (3, 3):
     tests_require.append('mock')
@@ -35,7 +36,7 @@ try:
 except:
     CHANGES = ''
 
-dockerfly_version = open(os.path.join(here, 'dockerfly/version.txt')).read().strip()
+from dockerfly.version import dockerfly_version
 
 setup(
     name = 'dockerfly',
@@ -54,14 +55,11 @@ setup(
     platforms = 'any',
     install_requires=requires,
     extras_require={
-        'sh':['sh >= 1.09'],
-        'docker-py':['docker-py >= 0.6.0'],
-        'docopt':['docopt >= 0.6.1'],
-        'testing':testing_extras,
-        },
+          'testing':testing_extras,
+          },
     entry_points={
      'console_scripts': [
-         'dockerfly = dockerfly.bin:dockerfly',
+         'dockerfly = dockerfly.bin.dockerfly:main',
         ],
     },
 )

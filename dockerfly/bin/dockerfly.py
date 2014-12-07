@@ -39,7 +39,7 @@ dockerfly_version = open(os.path.join(here, '../version.txt')).read().strip()
 
 from dockerfly.contrib.dockerlib.container import Container
 
-if __name__ == '__main__':
+def main():
     arguments = docopt(__doc__, version=dockerfly_version)
     docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
 
@@ -79,3 +79,6 @@ if __name__ == '__main__':
 
     if arguments['get']:
         print docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
+
+if __name__ == '__main__':
+    main()
