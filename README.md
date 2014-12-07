@@ -162,6 +162,6 @@ Caveats
 ========================
 enable sshd service in docker is unsafe, see here:
 
-    ihttp://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
+http://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
 
 but different people use Docker for different purposes, so  **Don't be afraid, but be careful.**
