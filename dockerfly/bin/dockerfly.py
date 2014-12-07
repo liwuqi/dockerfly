@@ -7,19 +7,18 @@ Usage:
   dockerfly.py ps
   dockerfly.py gen <config_json>
   dockerfly.py run <config_json>
-  dockerfly.py kill <container_id>
-  dockerfly.py exec <container_id> <cmd>
+  dockerfly.py get <container_id>
 
 Options:
   -h --help             Show this screen.
   --version             Show version.
 
 Example:
-    显示所有container              python2.7 dockerfly.py ps
-    生成一个container的配置文件    python2.7 dockerfly.py gen centos6.json
-    启动一个container              python2.7 dockerfly.py run centos6.json
-    停止container                  python2.7 dockerfly.py kill e5d898c10bff
-    在container内执行命令          python2.7 dockerfly.py exec e5d898c10bff 'echo hello'
+    show all containers             python2.7 dockerfly.py ps
+    generate container config       python2.7 dockerfly.py gen centos6.json
+    start container                 python2.7 dockerfly.py run centos6.json
+    remove container                python2.7 dockerfly.py kill e5d898c10bff
+    getpid container pid            python2.7 dockerfly.py getpid e5d898c10bff
 """
 
 import os
@@ -71,11 +70,5 @@ if __name__ == '__main__':
     if arguments['kill']:
         Container.remove(arguments['<container_id>'])
 
-    if arguments['exec']:
-        container_pid = docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
-        def process_output(line):
-                sys.stdout.write(line)
-
-        p = nsenter('-t', container_pid,
-                    '-n', arguments['<cmd>'].split(), _out=process_output)
-        p.wait()
+    if arguments['get']:
+        print docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
