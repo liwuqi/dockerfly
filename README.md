@@ -160,7 +160,7 @@ this is a clean image with sshd service and the default user/password is `root:r
 
 Caveats
 ========================
-enable sshd service in docker is unsafe, see here:
+Enable sshd service in docker is unsafe, see here:
 
 http://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
 
