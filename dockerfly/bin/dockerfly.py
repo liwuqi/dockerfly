@@ -29,15 +29,18 @@ from sh import docker, nsenter
 from docopt import docopt
 import docker as dockerpy
 
+here = os.path.abspath(os.path.dirname(__file__))
 try:
     import dockerfly
 except ImportError:
-    sys.path.insert(0, os.path.abspath(os.path.join(__file__, '../../../')))
+    sys.path.insert(0, os.path.abspath(os.path.join(here, '../../')))
+
+dockerfly_version = open(os.path.join(here, '../version.txt')).read().strip()
 
 from dockerfly.contrib.dockerlib.container import Container
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='dockerfly 0.1')
+    arguments = docopt(__doc__, version=dockerfly_version)
     docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
 
     container_json_exp = [{
