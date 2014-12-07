@@ -23,6 +23,7 @@ testing_extras = tests_require + [
     ]
 
 here = os.path.abspath(os.path.dirname(__file__))
+dockerfly_version = open(os.path.join(here, 'dockerfly/version.txt')).read().strip()
 
 try:
     README = open(os.path.join(here, 'README.rst')).read()
@@ -35,8 +36,6 @@ try:
     CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 except:
     CHANGES = ''
-
-from dockerfly.version import dockerfly_version
 
 setup(
     name = 'dockerfly',
