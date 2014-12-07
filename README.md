@@ -1,7 +1,7 @@
 What is `dockerfly`:
 ========================
 
-dockerfly is a small Docker tool to help you to create container with independent macvlan Eths simplely.
+dockerfly is a small Docker tool to help you to create container with independent macvlan Eths easily.
 
 use dokerfly, you can:
 
