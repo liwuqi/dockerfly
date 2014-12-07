@@ -19,7 +19,7 @@ How to Work:
     +---------+                  *******                   |                    Physical hostDocker                        |
     | Physical|                **       **                 |   +---------+           +---------+           +---------+     |
     \ hostA   /              **  Local    **               |   | Docker  |           | Docker  |           | Docker  |     |
-    |\       /|  --------->  *   NetWork   *  <----------- |   \ hostA   /           \ hostC   /           \ hostC   /     |
+    |\       /|  --------->  *   NetWork   *  <----------- |   \ hostA   /           \ hostB   /           \ hostC   /     |
     | ------  |              **           **               |   |\       /|           |\       /|           |\       /|     |
     |         |                **       **                 |   | ------  |           | ------  |           | ------  |     |
     +---------+                  *******                   |   | MacVlan |           | MacVLan |           |...EthC1 |     |
@@ -128,7 +128,7 @@ steps:
     docker pull docker.cn/memorybox/centos6_sshd
     ```
 
-this is a clean image with sshd service and the default user/password is `root:rootroot`
+this is a clean image with sshd service and the default user/password is `root:rootroot`, [more info](https://docker.cn/memorybox/centos6_sshd)
 
 * start the container by dockerfly:
 
