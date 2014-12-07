@@ -59,7 +59,7 @@ setup(
           },
     entry_points={
      'console_scripts': [
-         'dockerfly = dockerfly.bin.dockerfly:main',
+         'dockerflyctl = dockerfly.bin.dockerflyctl:main',
         ],
     },
 )

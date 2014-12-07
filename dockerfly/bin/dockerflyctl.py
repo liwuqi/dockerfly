@@ -33,7 +33,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 try:
     import dockerfly
 except ImportError:
-    sys.path.insert(0, os.path.abspath(os.path.join(here, '../../')))
+    sys.path.append(os.path.abspath(os.path.join(here, '../../')))
 
 dockerfly_version = open(os.path.join(here, '../version.txt')).read().strip()
 
