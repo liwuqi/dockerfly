@@ -123,9 +123,11 @@ dockerfly help you to create containers which shared local network by physical h
 steps:
 
 * pull a sshd image
+
     ```
     docker pull docker.cn/memorybox/centos6_sshd
     ```
+
 this is a clean image with sshd service and the default user/password is `root:rootroot`
 
 * start the container by dockerfly:
