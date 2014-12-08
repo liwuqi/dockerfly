@@ -16,10 +16,10 @@ Options:
 
 Example:
     show all containers             python2.7 dockerflyctl.py ps
-    generate container config       python2.7 dockerflyctl.py gen centos6.json
-    start container                 python2.7 dockerflyctl.py run centos6.json
-    remove container                python2.7 dockerflyctl.py rm  e5d898c10bff
-    getpid container pid            python2.7 dockerflyctl.py getpid e5d898c10bff
+    generate container config       python2.7 dockerflyctl.py gen       centos6.json
+    start container                 python2.7 dockerflyctl.py run       centos6.json
+    remove container                python2.7 dockerflyctl.py rm        e5d898c10bff
+    getpid container pid            python2.7 dockerflyctl.py getpid    e5d898c10bff
 """
 
 import os
@@ -77,7 +77,7 @@ def main():
     if arguments['rm']:
         Container.remove(arguments['<container_id>'])
 
-    if arguments['get']:
+    if arguments['getpid']:
         print docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
 
 if __name__ == '__main__':
