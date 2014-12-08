@@ -7,8 +7,8 @@ Usage:
   dockerflyctl.py ps
   dockerflyctl.py gen      <config_json>
   dockerflyctl.py run      <config_json>
-  dockerflyctl.py kill     <container_id>
-  dockerflyctl.py get      <container_id>
+  dockerflyctl.py rm       <container_id>
+  dockerflyctl.py getpid   <container_id>
 
 Options:
   -h --help             Show this screen.
@@ -18,7 +18,7 @@ Example:
     show all containers             python2.7 dockerflyctl.py ps
     generate container config       python2.7 dockerflyctl.py gen centos6.json
     start container                 python2.7 dockerflyctl.py run centos6.json
-    remove container                python2.7 dockerflyctl.py kill e5d898c10bff
+    remove container                python2.7 dockerflyctl.py rm  e5d898c10bff
     getpid container pid            python2.7 dockerflyctl.py getpid e5d898c10bff
 """
 
@@ -74,7 +74,7 @@ def main():
                                  docker_cli.inspect_container(container_id)['State']['Pid']
                         )
 
-    if arguments['kill']:
+    if arguments['rm']:
         Container.remove(arguments['<container_id>'])
 
     if arguments['get']:
