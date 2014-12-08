@@ -7,7 +7,7 @@ Usage:
   dockerfly.py ps
   dockerfly.py gen      <config_json>
   dockerfly.py run      <config_json>
-  dockerfly.py kill     <config_json>
+  dockerfly.py kill     <container_id>
   dockerfly.py get      <container_id>
 
 Options:
