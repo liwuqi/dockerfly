@@ -1,6 +1,7 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
+import random
 from sh import nsenter, ip
 
 class VEth(object):
@@ -24,6 +25,17 @@ class VEth(object):
 
     def attach_to_container(self, container_pid):
         raise NotImplementedError
+
+    @classmethod
+    def gen_mac_address(cls):
+        """fake a unique mac address"""
+        # The first line is defined for specified vendor
+        mac = [ 0x00, 0x24, 0x81,
+        random.randint(0x00, 0x7f),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff) ]
+
+        return ':'.join(map(lambda x: "%02x" % x, mac))
 
 class MacvlanEth(VEth):
     """add a macvlan eth to net namespace and attach to container
@@ -50,7 +62,7 @@ class MacvlanEth(VEth):
 
     def create(self):
         ip('link', 'add', self._veth_name,
-           'link', self._link_to, 'type', 'macvlan', 'mode', 'bridge')
+           'link', self._link_to, 'address', self.gen_mac_address(), 'type', 'macvlan', 'mode', 'bridge')
         return self
 
     def up(self):
