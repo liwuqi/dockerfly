@@ -4,22 +4,22 @@
 """dockerfly bin tool
 
 Usage:
-  dockerfly.py ps
-  dockerfly.py gen      <config_json>
-  dockerfly.py run      <config_json>
-  dockerfly.py kill     <container_id>
-  dockerfly.py get      <container_id>
+  dockerflyctl.py ps
+  dockerflyctl.py gen      <config_json>
+  dockerflyctl.py run      <config_json>
+  dockerflyctl.py kill     <container_id>
+  dockerflyctl.py get      <container_id>
 
 Options:
   -h --help             Show this screen.
   --version             Show version.
 
 Example:
-    show all containers             python2.7 dockerfly.py ps
-    generate container config       python2.7 dockerfly.py gen centos6.json
-    start container                 python2.7 dockerfly.py run centos6.json
-    remove container                python2.7 dockerfly.py kill e5d898c10bff
-    getpid container pid            python2.7 dockerfly.py getpid e5d898c10bff
+    show all containers             python2.7 dockerflyctl.py ps
+    generate container config       python2.7 dockerflyctl.py gen centos6.json
+    start container                 python2.7 dockerflyctl.py run centos6.json
+    remove container                python2.7 dockerflyctl.py kill e5d898c10bff
+    getpid container pid            python2.7 dockerflyctl.py getpid e5d898c10bff
 """
 
 import os
