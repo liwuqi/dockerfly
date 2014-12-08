@@ -1,3 +1,8 @@
+release 0.4.0 2014/12/08
+-------------------------------
+bug fix:
+dockerflyctl getpid <container_id>
+
 release 0.3.0 2014/12/08
 -------------------------------
 bug fix:
