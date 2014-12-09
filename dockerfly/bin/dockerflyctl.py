@@ -22,21 +22,12 @@ Example:
     getpid container pid            python2.7 dockerflyctl.py getpid    e5d898c10bff
 """
 
-import os
-import sys
 import json
 from sh import docker, nsenter
 from docopt import docopt
 import docker as dockerpy
 
-here = os.path.abspath(os.path.dirname(__file__))
-try:
-    import dockerfly
-except ImportError:
-    sys.path.append(os.path.abspath(os.path.join(here, '../../')))
-
-dockerfly_version = open(os.path.join(here, '../version.txt')).read().strip()
-
+from include import dockerfly_version
 from dockerfly.contrib.dockerlib.container import Container
 
 def main():
