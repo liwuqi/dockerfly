@@ -28,7 +28,7 @@ from docopt import docopt
 import docker as dockerpy
 
 from include import dockerfly_version
-from dockerfly.contrib.dockerlib.container import Container
+from dockerfly.dockerlib.container import Container
 
 def main():
     arguments = docopt(__doc__, version=dockerfly_version)

@@ -4,7 +4,7 @@
 import unittest
 from sh import ifconfig
 
-from dockerfly.contrib.network.veth import MacvlanEth
+from dockerfly.dockernet.veth import MacvlanEth
 
 class TestMacvlan(unittest.TestCase):
 

@@ -5,8 +5,8 @@ import time
 import docker as dockerpy
 from datetime import datetime
 
-from dockerfly.contrib.network.veth import MacvlanEth
-from dockerfly.contrib.dockerlib.libs import run_in_process
+from dockerfly.dockernet.veth import MacvlanEth
+from dockerfly.dockerlib.libs import run_in_process
 
 class Container(object):
 

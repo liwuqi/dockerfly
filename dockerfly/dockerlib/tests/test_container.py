@@ -5,9 +5,9 @@ import time
 import unittest
 from sh import ifconfig
 
-from dockerfly.contrib.dockerlib.container import Container
-from dockerfly.contrib.network.veth import MacvlanEth
-from dockerfly.contrib.dockerlib.libs import get_all_containers_id
+from dockerfly.dockerlib.container import Container
+from dockerfly.dockerlib.libs import get_all_containers_id
+from dockerfly.dockernet.veth import MacvlanEth
 
 class TestContainer(unittest.TestCase):
 
