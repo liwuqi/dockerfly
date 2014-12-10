@@ -6,23 +6,26 @@ import json
 import time
 import shutil
 
-default_db_dir = '/var/run/dockerfly'
-default_container_db = os.path.join(default_db_dir, 'containers.json')
-dbs = [default_container_db]
+from dockerfly import settings
+
+db_dir = settings.default_db_dir
+dbs = settings.dbs
 
 def init_db(func):
-    if not os.path.exists(default_db_dir):
-        os.mkdir(default_db_dir)
-    for db in dbs:
-        if not os.path.exists(db):
-            with open(db, 'w') as db_file:
-                json.dump({}, db_file)
-    return func
+    def init_db_wrapper(*args, **kwargs):
+        if not os.path.exists(db_dir):
+            os.mkdir(db_dir)
+        for db in dbs:
+            if not os.path.exists(db):
+                with open(db, 'w') as db_file:
+                    json.dump([], db_file, indent=4)
+        return func(*args, **kwargs)
+    return init_db_wrapper
 
 @init_db
-def update_db(content, db_name='containers', db_dir=default_db_dir):
+def update_db(content, db_name):
     db_file = os.path.join(db_dir, db_name)
-    lock_file = os.path.join(db_file, '.json.lock')
+    lock_file = db_file + '.lock'
     while True:
         if os.path.exists(lock_file):
             time.sleep(0.1)
@@ -32,11 +35,16 @@ def update_db(content, db_name='containers', db_dir=default_db_dir):
     #lock update op
     open(lock_file, 'a').close()
     with open(db_file, 'w') as db:
-        json.dump(content, db)
+        json.dump(content, db, indent=4)
     os.remove(lock_file)
 
 @init_db
-def get_db(db_name='containers', db_dir=default_db_dir):
+def get_db(db_name):
     db_file = os.path.join(db_dir, db_name)
-    with open(db_file, 'a') as db:
+    with open(db_file, 'r') as db:
         return json.load(db)
+
+def del_db(db_name):
+    db_file = os.path.join(db_dir, db_name)
+    if os.path.exists(db_file):
+        os.remove(db_file)

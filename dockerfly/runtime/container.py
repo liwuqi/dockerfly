@@ -5,17 +5,19 @@ import os
 
 from dockerfly.runtime.database import update_db, get_db
 
-def get_all_container_status():
-    return get_db('containers')
+db_name = 'containers.json'
 
-def get_container_status(container_id):
-    for container in get_all_container_status():
+def get_all_status():
+    return get_db(db_name)
+
+def get_status(container_id):
+    for container in get_all_status():
         if container_id == container.get('id', None):
             return container
     raise LookupError("The container doesn't exist in dockerfly")
 
-def update_container_status(containers):
-    curr_containers = get_all_container_status()
+def update_status(containers):
+    curr_containers = get_all_status()
     updating_containers = containers
     new_containers = []
 
@@ -26,13 +28,22 @@ def update_container_status(containers):
                     curr_container[k] = v
         new_containers.append(curr_container)
 
-    update_db(new_containers, 'containers')
+    update_db(new_containers, db_name)
 
-def delete_containers(container_ids):
-    curr_containers = get_all_container_status()
+def add_status(containers):
+    curr_containers = get_all_status()
+    curr_containers.extend(containers)
+
+    update_db(curr_containers, db_name)
+
+def remove_status(container_ids):
+    curr_containers = get_all_status()
     new_containers = []
     for index, container in enumerate(curr_containers):
         if container['id'] not in container_ids:
             new_containers.append(container)
 
-    update_db(new_containers, 'containers')
+    update_db(new_containers, db_name)
+
+def get_status_db():
+    return db_name

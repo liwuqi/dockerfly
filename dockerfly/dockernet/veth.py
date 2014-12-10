@@ -107,7 +107,10 @@ class MacvlanEth(VEth):
                 nsenter('-t', self._attach_to_container_pid,
                         '-n', 'ip', 'route', 'add', 'default', 'via', gateway, 'dev', self._veth_name)
                 #arping my gateway, cause the gateway to flush the ARP cache for my IP address
-                nsenter('-t', self._attach_to_container_pid,
-                        '-n', 'ping', '-c', '1', gateway)
+                try:
+                    nsenter('-t', self._attach_to_container_pid,
+                            '-n', 'ping', '-c', '1', gateway)
+                except Exception:
+                    pass
 
         return self
