@@ -48,13 +48,15 @@ class TestRuntime(unittest.TestCase):
                     'last_modify_time':1418176940.012
                 }
             ]
-
-    def test_create_container(self):
         add_status(self._containers)
+
+    def test_create_container_status(self):
         self.assertEqual(self._containers, get_all_status())
 
-    def test_update_container(self):
-        add_status(self._containers)
+    def test_get_container_status(self):
+        self.assertEqual(self._containers[0], get_status(1))
+
+    def test_update_container_status(self):
         update_containers = [
             {
                 "gateway": "192.168.159.1",
@@ -77,8 +79,7 @@ class TestRuntime(unittest.TestCase):
         self._containers.insert(0, update_containers[0])
         self.assertEqual(get_all_status(), self._containers)
 
-    def test_add_container(self):
-        add_status(self._containers)
+    def test_add_container_status(self):
         add_containers = [
             {
                 "gateway": "192.168.159.1",
@@ -100,8 +101,7 @@ class TestRuntime(unittest.TestCase):
         self._containers.extend(add_containers)
         self.assertEqual(get_all_status(), self._containers)
 
-    def test_remove_container(self):
-        add_status(self._containers)
+    def test_remove_container_status(self):
         remove_container_ids = ([1])
         remove_status(remove_container_ids)
         self._containers.pop(0)

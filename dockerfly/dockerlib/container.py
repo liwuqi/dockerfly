@@ -49,6 +49,36 @@ class Container(object):
         return container_id
 
     @classmethod
+    def create(cls, image_name, run_cmd):
+        """create continer"""
+        container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
+                                              datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S'))
+        container = cls.docker_cli.create_container(image=image_name,
+                                                    command=run_cmd,
+                                                    name=container_name)
+        return container.get('Id')
+
+    @classmethod
+    def start(cls, container_id, veths, gateway):
+        """start eths and continer"""
+        cls.docker_cli.start(container=container_id, privileged=True)
+
+        for index, (veth, link_to, ip_netmask) in enumerate(veths):
+            macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
+            container_pid = cls.docker_cli.inspect_container(container_id)['State']['Pid']
+
+            if index == 0:
+                macvlan_eth.attach_to_container(container_pid,
+                                                is_route=True, gateway=gateway)
+            else:
+                macvlan_eth.attach_to_container(container_pid)
+
+    @classmethod
+    def stop(cls, container_id):
+        """stop continer"""
+        cls.docker_cli.stop(container_id)
+
+    @classmethod
     def remove(cls, container_id):
         """remove eths and continer"""
         cls.docker_cli.stop(container_id)
