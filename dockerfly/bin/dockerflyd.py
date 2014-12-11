@@ -20,13 +20,19 @@ if not os.path.exists(working_directory):
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler(os.path.join(working_directory, 'dockerflyd.log'))
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
 logger.addHandler(fh)
 
+pid_file = os.path.join(working_directory, 'dockerflyd.pid.lock')
+
 def dockerflyd_setup():
-    pass
+    if os.path.exists(pid_file):
+        print "Error, {} has already existed".format(pid_file)
 
 def dockerflyd_cleanup():
-    pass
+    if os.path.exists(pid_file):
+        os.remove(pid_file)
 
 def dockerflyd_reload_config():
     pass

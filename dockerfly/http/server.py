@@ -54,7 +54,7 @@ class ContainerList(Resource):
         for container in create_containers_json:
             container['id'] = ContainerCtl.create(container['image_name'],
                                                   container['run_cmd'],
-                                                  container['name'])
+                                                  container['container_name'])
             ContainerCtl.start(container['id'],
                                container['eths'],
                                container['gateway'])
@@ -122,7 +122,7 @@ dockerfly_api.add_resource(ContainerTaskList, '/v1/container/<string:container_i
 dockerfly_api.add_resource(ContainerTask, '/v1/container/<string:container_id>/task/<string:task_id>')
 
 def run_server(debug=False):
-    dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False)
+    dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host='0.0.0.0')
 
 if __name__ == '__main__':
     run_server(True)
