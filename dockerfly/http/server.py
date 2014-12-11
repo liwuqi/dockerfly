@@ -52,10 +52,12 @@ class ContainerList(Resource):
         """
         create_containers_json = request.get_json()
         for container in create_containers_json:
-            container['id'] = ContainerCtl.run(container['image_name'],
-                                               container['run_cmd'],
-                                               container['eths'],
-                                               container['gateway'])
+            container['id'] = ContainerCtl.create(container['image_name'],
+                                                  container['run_cmd'],
+                                                  container['name'])
+            ContainerCtl.start(container['id'],
+                               container['eths'],
+                               container['gateway'])
             container['pid'] = ContainerCtl.get_pid(container['id'])
             container['last_modify_time'] = time.time()
         ContainerStatus.add_status(create_containers_json)
