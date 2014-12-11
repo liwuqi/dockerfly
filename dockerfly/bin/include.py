@@ -9,6 +9,3 @@ try:
     import dockerfly
 except ImportError:
     sys.path.append(os.path.abspath(os.path.join(here, '../../')))
-
-dockerfly_version = open(os.path.join(here, '../version.txt')).read().strip()
-

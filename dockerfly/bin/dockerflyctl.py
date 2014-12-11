@@ -27,7 +27,8 @@ from sh import docker, nsenter
 from docopt import docopt
 import docker as dockerpy
 
-from include import dockerfly_version
+import include
+from dockerfly.settings import dockerfly_version
 from dockerfly.dockerlib.container import Container
 
 def main():

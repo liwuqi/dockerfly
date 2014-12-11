@@ -7,7 +7,8 @@ import signal
 import daemon
 import lockfile
 
-from include import dockerfly_version
+import include
+from dockerfly.settings import dockerfly_version
 from dockerfly.http.server import run_server
 
 def dockerflyd_setup():

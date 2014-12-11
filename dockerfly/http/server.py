@@ -3,40 +3,64 @@
 
 import json
 from flask import Flask, request
+from flask.ext.restful import reqparse, abort, Api, Resource
 
-from dockerfly.bin.include import dockerfly_version
+from dockerfly.settings import dockerfly_version
 
 dockerfly_app = Flask(__name__)
+dockerfly_api = Api(dockerfly_app)
 
-@dockerfly_app.route('/')
-def show_hello():
-    return json.dumps({"dockerfly":dockerfly_version})
+containers = []
 
-@dockerfly_app.route('/v1/containers/:id', methods = ['GET', 'POST', 'DELETE'])
-def containers_edit():
-    if request.method == 'GET':
-        return "ECHO: GET\n"
+def abort_if_container_doesnt_exist(container_id):
+    if container_id not in containers:
+        abort(404, message="Container {} doesn't exist".format(container_id))
 
-    if request.method == 'POST':
-        return "ECHO: POST\n"
+class Version(Resource):
+    def get(self):
+        return {'version':dockerfly_version}
 
-    elif request.method == 'DELETE':
-        return "ECHO: DELETE"
+class ContainerList(Resource):
+    def get(self):
+        return {'all':'bbbbbbbbbbbbb'}
 
-@dockerfly_app.route('/v1/containers/:id/active', methods = ['POST'])
-def containers_control():
-    if request.method == 'POST':
-        return "ECHO: POST\n"
+    def post(self):
+        return {}
 
-@dockerfly_app.route('/v1/containers/:id/inactive', methods = ['POST'])
-def containers_inactive():
-    if request.method == 'POST':
-        return "ECHO: POST\n"
+class Container(Resource):
+    def get(self, container_id):
+        abort_if_container_doesnt_exist(container_id)
+        return containers[container_id]
 
-@dockerfly_app.route('/v1/containers/:id/task', methods = ['POST'])
-def containers_active():
-    if request.method == 'POST':
-        return "ECHO: POST\n"
+    def delete(self, container_id):
+        return {}
+
+class ContainerActive(Resource):
+    def post(self, container_id):
+        return {}
+
+class ContainerInactive(Resource):
+    def post(self, container_id):
+        return {}
+
+class ContainerTaskList(Resource):
+    def post(self, container_id):
+        return {}
+
+class ContainerTask(Resource):
+    def get(self, task_id):
+        return {}
+
+    def delete(self, task_id):
+        return {}
+
+dockerfly_api.add_resource(Version, '/v1/version')
+dockerfly_api.add_resource(ContainerList, '/v1/container')
+dockerfly_api.add_resource(Container, '/v1/container/<string:container_id>')
+dockerfly_api.add_resource(Container, '/v1/container/active')
+dockerfly_api.add_resource(Container, '/v1/container/inactive')
+dockerfly_api.add_resource(ContainerTaskList, '/v1/container/task')
+dockerfly_api.add_resource(ContainerTask, '/v1/container/task/<string:task_id>')
 
 def run_server():
     dockerfly_app.run()
