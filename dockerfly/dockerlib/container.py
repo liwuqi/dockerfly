@@ -27,31 +27,15 @@ class Container(object):
         Return:
             container_id
         """
-        container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
-                                              datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S'))
-        container = cls.docker_cli.create_container(image=image_name,
-                                                    command=run_cmd,
-                                                    name=container_name)
-        container_id = container.get('Id')
-
-        cls.docker_cli.start(container=container_id, privileged=True)
-
-        for index, (veth, link_to, ip_netmask) in enumerate(veths):
-            macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
-            container_pid = cls.docker_cli.inspect_container(container_id)['State']['Pid']
-
-            if index == 0:
-                macvlan_eth.attach_to_container(container_pid,
-                                                is_route=True, gateway=gateway)
-            else:
-                macvlan_eth.attach_to_container(container_pid)
-
+        container_id = cls.create(image_name, run_cmd)
+        cls.start(container_id, veths, gateway)
         return container_id
 
     @classmethod
-    def create(cls, image_name, run_cmd):
+    def create(cls, image_name, run_cmd, container_name=None):
         """create continer"""
-        container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
+        if not container_name:
+            container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
                                               datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S'))
         container = cls.docker_cli.create_container(image=image_name,
                                                     command=run_cmd,
