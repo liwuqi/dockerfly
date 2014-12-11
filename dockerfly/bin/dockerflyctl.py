@@ -36,14 +36,19 @@ def main():
     docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
 
     container_json_exp = [{
-            'image_name':'centos:centos6',
+            'image_name': 'centos:centos6',
             'run_cmd': '/bin/sleep 300',
             'eths':
             [
                ('testDockerflyv0', 'eth0', '192.168.159.10/24'),
                ('testDockerflyv1', 'eth0', '192.168.159.11/24'),
             ],
-            'gateway':'192.168.159.2'
+            'gateway': '192.168.159.2',
+            'container_name': None,
+            'status': 'stopped',
+            'last_modify_time': 0,
+            'id': 0,
+            'pid': 0,
         }]
 
     if arguments['ps']:
