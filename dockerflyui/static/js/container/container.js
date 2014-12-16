@@ -1,5 +1,6 @@
 'use strict';
 
+
 angular.module('myApp.container', ['ngRoute', 'containerControllers', 'containerServices'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -7,10 +8,5 @@ angular.module('myApp.container', ['ngRoute', 'containerControllers', 'container
     templateUrl: 'static/partials/container.html',
     controller: 'ContainerListCtrl'
   });
-}])
-
-/*
-.controller('ContainerListCtrl', [function() {
-
 }]);
-*/
+
