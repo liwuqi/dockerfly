@@ -5,6 +5,7 @@ angular.module('myApp', [
   'ngRoute',
   'ngPrettyJson',
   'myApp.container',
+  'myApp.startup',
   'myApp.version'
 ]).
 config(['$routeProvider', function($routeProvider) {

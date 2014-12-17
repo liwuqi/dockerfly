@@ -12,41 +12,50 @@
   <link rel="stylesheet" href="static/bower_components/html5-boilerplate/css/normalize.css">
   <link rel="stylesheet" href="static/bower_components/html5-boilerplate/css/main.css">
   <link rel="stylesheet" href="static/bower_components/bootstrap2.3.2/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../static/bower_components/ng-prettyjson/dist/ng-prettyjson.min.css">
+  <link rel="stylesheet" href="static/bower_components/ng-prettyjson/dist/ng-prettyjson.min.css">
   <link rel="stylesheet" href="static/css/dockerflyuiapp.css">
   <script src="static/bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
-<body>
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
+  <body>
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-  <div class="container">
-    <div class="page-header">
-      <h3>DockerflyUI:Make you manage docker containers easily</h3>
+    <div class="container">
+      <div class="page-header">
+        <h3>DockerflyUI:Make you manage docker containers easily</h3>
+      </div>
+
+      <ul class="nav nav-pills">
+        <li>
+          <a href="#/containers">Container Status</a>
+        </li>
+        <li class="divider-vertical"></li>
+        <li><a href="#/startup">Create Containers</a></li>
+      </ul>
+
+      <div ng-view></div>
+
+      <div class="page-footer">
+      </div>
     </div>
 
-    <div ng-view></div>
+    <script src="static/bower_components/angular/angular.js"></script>
+    <script src="static/bower_components/angular-route/angular-route.js"></script>
+    <script src="static/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="static/bower_components/ng-prettyjson/src/ng-prettyjson.js"></script>
+    <script src="static/bower_components/ng-prettyjson/src/ace.js"></script>
+    <script src="static/bower_components/jquery/jquery.min.js"></script>
+    <script src="static/bower_components/bootstrap2.3.2/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/js/dockerflyuiapp.js"></script>
+    <script src="static/js/container/container.js"></script>
+    <script src="static/js/container/services.js"></script>
+    <script src="static/js/container/controllers.js"></script>
+    <script src="static/js/startup/startup.js"></script>
+    <script src="static/js/startup/controllers.js"></script>
+    <script src="static/js/components/version/version.js"></script>
+    <script src="static/js/components/version/version-directive.js"></script>
+    <script src="static/js/components/version/interpolate-filter.js"></script>
 
-    <div class="page-footer">
-    </div>
-  </div>
-
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
-  <script src="static/bower_components/angular/angular.js"></script>
-  <script src="static/bower_components/angular-route/angular-route.js"></script>
-  <script src="static/bower_components/angular-resource/angular-resource.js"></script>
-  <script src="static/bower_components/ng-prettyjson/dist/ng-prettyjson.min.js"></script>
-  <script src="static/bower_components/jquery/jquery.min.js"></script>
-  <script src="static/bower_components/bootstrap2.3.2/bootstrap/js/bootstrap.min.js"></script>
-  <script src="static/js/dockerflyuiapp.js"></script>
-  <script src="static/js/container/container.js"></script>
-  <script src="static/js/container/services.js"></script>
-  <script src="static/js/container/controllers.js"></script>
-  <script src="static/js/components/version/version.js"></script>
-  <script src="static/js/components/version/version-directive.js"></script>
-  <script src="static/js/components/version/interpolate-filter.js"></script>
-</body>
+  </body>
 </html>

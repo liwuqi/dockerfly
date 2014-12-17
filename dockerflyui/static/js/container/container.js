@@ -1,6 +1,5 @@
 'use strict';
 
-
 angular.module('myApp.container', ['ngRoute', 'containerControllers', 'containerServices'])
 
 .config(['$routeProvider', function($routeProvider) {

@@ -1,4 +1,4 @@
-ng-prettyjson [![NPM version](https://badge.fury.io/js/ng-prettyjson.png)](http://badge.fury.io/js/ng-prettyjson) [![Build Status](https://travis-ci.org/darul75/ng-prettyjson.png?branch=master)](https://travis-ci.org/darul75/ng-prettyjson) [![Total views](https://sourcegraph.com/api/repos/github.com/darul75/ng-prettyjson/counters/views.png)](https://sourcegraph.com/github.com/darul75/ng-prettyjson) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/darul75/ng-prettyjson/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+ng-prettyjson [![NPM version](https://badge.fury.io/js/ng-prettyjson.png)](http://badge.fury.io/js/ng-prettyjson) [![Build Status](https://travis-ci.org/darul75/ng-prettyjson.png?branch=master)](https://travis-ci.org/darul75/ng-prettyjson) [![Total views](https://sourcegraph.com/api/repos/github.com/darul75/ng-prettyjson/counters/views.png)](https://sourcegraph.com/github.com/darul75/ng-prettyjson)
 =====================
 
 Angular directive for JSON pretty display output, indent and colorized.
@@ -7,6 +7,9 @@ Idea was given by the need to display some configuration JSON format files in a 
 
 Inspired by this from stackoverflow
 [pretty json javascript](http://stackoverflow.com/questions/4810841/json-pretty-print-using-javascript)
+
+Edition is now available with awesome Ace editor:
+[ace editor](http://ace.c9.io/)
 
 Demo
 ------------
@@ -54,13 +57,29 @@ angular.module('myApp', ['ngPrettyJson']);
 and then just add a `pre` with `pretty-json` directive:
 
 ```html
-<pre pretty-json="jsonObj" />
+<!-- READ-ONLY -->
+<pre pretty-json="jsonObj"  />
+
+<!-- EDITION -->
+<pre pretty-json="jsonObj" edition="true" on-edit="doWith(newJson)" />
 ```
 
-`jsonObj` is a variable on the scope to be output as JSON:
+* `jsonObj` is a variable on the scope to be output as JSON:
 
 ```javascript
 $scope.jsonObj = {a:1, 'b':'foo', c:[false,null, {d:{e:1.3e5}}]};
+```
+
+* `edition` activate edition buttons, Ace library has to be loaded, see ace documentation or example [here](https://github.com/darul75/ng-prettyjson/blob/master/demo/ng-prettyjson.html).
+
+* `on-edit` parent scope function : parameter name has to be 'newJson'.
+
+By default whether no edition callback has been set, an event is fired from directive. Here is how to catch it:
+
+```javascript
+$scope.$on('json-updated', function(msg, value) {
+	
+});
 ```
 
 ### Tag Usage
@@ -88,6 +107,10 @@ assuming you already have `grunt` installed, otherwise you also need to do:
 ```
 npm install -g grunt-cli
 ```
+
+## Metrics
+
+[![NPM](https://nodei.co/npm/ng-prettyjson.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/ng-prettyjson/)
 
 ## License
 

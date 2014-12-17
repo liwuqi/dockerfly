@@ -8,20 +8,22 @@ angular.module('ngPrettyJson', [])
             restrict: 'AE',
             scope: {
                 json: '=',
-                prettyJson: '='
+                prettyJson: '=',
+                onEdit: '&'
             },
             replace: true,
             template: '<div>' + 
-                        // '<button ng-click="edit()" ng-show="edition && !editActivated">Edit</button>' +
-                        // '<button ng-click="edit()" ng-show="edition && editActivated">Cancel</button>' +
-                        // '<button ng-click="update()" ng-show="editActivated && parsable">Update</button>' +
+                        '<button ng-click="edit()" ng-show="edition && !editActivated">Edit</button>' +
+                        '<button ng-click="edit()" ng-show="edition && editActivated">Cancel</button>' +
+                        '<button ng-click="update()" ng-show="editActivated && parsable">Update</button>' +
                         '<pre id="prettyjson"></pre>' +                        
                     '</div>',
             link: function (scope, elm, attrs) {
                 var currentValue = {}, id = 'prettyjson', editor = null;
                 
                 scope.editActivated = false;
-                scope.edition = attrs.edition;    
+                scope.edition = attrs.edition;
+                scope.aceEditor = window.ace !== undefined;    
 
                 // prefer the "json" attribute over the "prettyJson" one.
                 // the value on the scope might not be defined yet, so look at the markup.
@@ -34,7 +36,7 @@ angular.module('ngPrettyJson', [])
                             .replace(/\[/g, "<span class='sep'>[</span>")
                             .replace(/\]/g, "<span class='sep'>]</span>")
                             .replace(/\,/g, "<span class='sep'>,</span>");                        
-                        return isDefined(value) ? elm.find('pre').html(html) : elm.empty();
+                        return isDefined(value) ? elm.find('pre').html(html) : elm.find('pre').empty();
                     },
                     objWatch;
 
@@ -57,7 +59,7 @@ angular.module('ngPrettyJson', [])
 
                 var editChanges = function(e) {                    
                     try {
-                        scope.currentValue = JSON.parse(editor.getValue());
+                        currentValue = JSON.parse(editor.getValue());
                         scope.parsable = true;
                     }
                     catch (error) {scope.parsable = false;}  
@@ -67,9 +69,15 @@ angular.module('ngPrettyJson', [])
                 };
                                    
                 scope.edit = function() { 
-
+                    if (!scope.aceEditor) {
+                        if (console)
+                            console.log('\'ace lib is missing\'');
+                        return;
+                    }
+                        
                     if (!scope.editActivated) {     
                         editor = ace.edit(id);
+                        editor.setOptions({maxLines: Infinity});
                         editor.on('change', editChanges);                        
                         editor.getSession().setMode("ace/mode/json");                        
                     }
@@ -81,7 +89,10 @@ angular.module('ngPrettyJson', [])
                 };
 
                 scope.update = function() {
-                    scope.$emit('json-updated', scope.newValue);
+                    scope.$emit('json-updated', currentValue);
+                    if (scope.onEdit)
+                        scope.onEdit({newJson: currentValue});
+                    this.edit();
                 };
             }
         };

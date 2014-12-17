@@ -27,6 +27,24 @@ containerControllers.controller('ContainerListCtrl', ['$scope', '$http', '$timeo
 
   $scope.orderProp = 'last_modify_time';
   $scope.collapsed = {};
+
+  /* for refresh scroll position */
+  /*
+  $scope.addNewItem = function() {
+    var wrapper = document.getElementById('dockerflyui-accordion');
+    var scrollRemaining = wrapper.scrollHeight - wrapper.scrollTop;
+
+    $scope.containers = $scope.containers.concat({
+      id: $scope.containers.length,
+      name: "container " + $scope.containers.length
+    });
+    // will fail if you observe the item 0 because we scroll before the view is updated;
+    $timeout(function(){
+      wrapper.scrollTop = wrapper.scrollHeight - scrollRemaining;
+    },0);
+  }
+  */
+
   /* auto refresh */
   (function update() {
     $timeout(update, 5000);

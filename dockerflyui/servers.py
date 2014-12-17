@@ -19,7 +19,10 @@ class ContainerList(Resource):
 
     def post(self):
         create_containers_json = request.get_json()
-        return requests.post(dockerflyd_server + '/v1/containers', data= create_containers_json).json()
+        headers = {'content-type': 'application/json'}
+        return requests.post(dockerflyd_server + '/v1/containers',
+                             data=json.dumps(create_containers_json),
+                             headers=headers).json()
 
 class Container(Resource):
     def get(self, container_id):
