@@ -19,9 +19,27 @@ class ContainerList(Resource):
 
     def post(self):
         create_containers_json = request.get_json()
-        return request.post(dockerflyd_server + '/v1/containers', data= create_containers_json).json()
+        return requests.post(dockerflyd_server + '/v1/containers', data= create_containers_json).json()
+
+class Container(Resource):
+    def get(self, container_id):
+        return requests.get(dockerflyd_server + '/v1/container/' + container_id).json()
+
+    def delete(self, container_id):
+        return requests.delete(dockerflyd_server + '/v1/container/' + container_id).json()
+
+class ContainerActive(Resource):
+    def put(self, container_id):
+        return requests.put(dockerflyd_server + '/v1/container/' + container_id + '/active').json()
+
+class ContainerInactive(Resource):
+    def put(self, container_id):
+        return requests.put(dockerflyd_server + '/v1/container/' + container_id + '/inactive').json()
 
 dockerflyui_api.add_resource(ContainerList, '/api/containers')
+dockerflyui_api.add_resource(Container, '/api/container/<string:container_id>')
+dockerflyui_api.add_resource(ContainerActive, '/api/container/<string:container_id>/active')
+dockerflyui_api.add_resource(ContainerInactive, '/api/container/<string:container_id>/inactive')
 
 if __name__ == '__main__':
     dockerflyui_app.run(host='0.0.0.0', port=80, debug=True)
