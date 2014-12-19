@@ -7,7 +7,7 @@ from flask.ext.restful import reqparse, abort, Api, Resource
 dockerflyui_app = Flask(__name__)
 dockerflyui_api = Api(dockerflyui_app)
 
-dockerflyd_server = 'http://192.168.159.147:5000'
+dockerflyd_server = 'http://192.168.159.147:5123'
 
 @dockerflyui_app.route('/')
 def home(name=None):
