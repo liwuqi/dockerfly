@@ -47,7 +47,7 @@ containerControllers.controller('ContainerListCtrl', ['$scope', '$http', '$timeo
 
   /* auto refresh */
   (function update() {
-    $timeout(update, 5000);
+    $timeout(update, 15000);
     $scope.containers = Container.query();
 
     if (!$scope.collapsed) {
