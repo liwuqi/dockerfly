@@ -12,8 +12,8 @@ elif (3, 0) < py_version < (3, 2):
     raise RuntimeError('On Python 3, dockerfly requires Python 3.2 or later')
 
 requires = ['sh >= 1.09', 'docker-py >= 0.6.0',
-            'docopt >= 0.6.1', 'flask >= 0.10.1',
-            'flask-restful' >= '0.3.0', 'requests' >= '2.5.0']
+            'docopt >= 0.6.1', 'flask >= 0.10.1', 'daemon >= 1.1', 'lockfile >= 0.10.2',
+            'flask-restful >= 0.3.0', 'requests >= 2.5.0']
 
 tests_require = []
 if py_version < (3, 3):
