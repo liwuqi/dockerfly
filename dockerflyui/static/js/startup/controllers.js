@@ -14,6 +14,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         ],
         "image_name": "172.16.11.13:5000/brain/centos:centos6_sshd",
         "run_cmd": "/usr/sbin/sshd -D",
+        "resize":"51200",
         "id":null,
         "pid":null,
         "status":"running",
