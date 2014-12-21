@@ -8,6 +8,7 @@ Usage:
   dockerflyctl.py gen      <config_json>
   dockerflyctl.py run      <config_json>
   dockerflyctl.py rm       <container_id>
+  dockerflyctl.py resize   <container_id> <new_size>
   dockerflyctl.py getpid   <container_id>
 
 Options:
@@ -19,6 +20,7 @@ Example:
     generate container config       python2.7 dockerflyctl.py gen       centos6.json
     start container                 python2.7 dockerflyctl.py run       centos6.json
     remove container                python2.7 dockerflyctl.py rm        e5d898c10bff
+    resize container                python2.7 dockerflyctl.py resize    e5d898c10bff 20480
     getpid container pid            python2.7 dockerflyctl.py getpid    e5d898c10bff
 """
 
@@ -73,6 +75,9 @@ def main():
 
     if arguments['rm']:
         Container.remove(arguments['<container_id>'])
+
+    if arguments['resize']:
+        Container.resize(arguments['<container_id>'], arguments['<new_size>'])
 
     if arguments['getpid']:
         print docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']

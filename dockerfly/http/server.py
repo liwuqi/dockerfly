@@ -58,6 +58,8 @@ class ContainerList(Resource):
             ContainerCtl.start(container['id'],
                                container['eths'],
                                container['gateway'])
+            if container.get('resize', None):
+                ContainerCtl.resize(container['id'], container['resize'])
             container['pid'] = ContainerCtl.get_pid(container['id'])
             container['last_modify_time'] = time.time()
         ContainerStatus.add_status(create_containers_json)

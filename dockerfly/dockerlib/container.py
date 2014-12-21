@@ -1,7 +1,10 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import sh
 import time
+import glob
 import docker as dockerpy
 from datetime import datetime
 
@@ -67,6 +70,26 @@ class Container(object):
         """remove eths and continer"""
         cls.docker_cli.stop(container_id)
         cls.docker_cli.remove_container(container_id)
+
+    @classmethod
+    def resize(cls, container_id, new_size=10240):
+        """resize container disk space
+
+        args:
+            new_size: 1024Mb
+        """
+        dev_path = glob.glob("/dev/mapper/docker-*-*-%s*" % container_id)
+        if dev_path:
+            dev = os.path.basename(dev_path[0])
+        else:
+            return
+
+        #load
+        table = sh.dmsetup('table', dev).split()
+        table[1] = str(int(new_size)*1024*1024/512)
+        sh.dmsetup((sh.echo(' '.join(table))), 'load', dev)
+        sh.dmsetup('resume', dev)
+        sh.resize2fs(dev_path[0])
 
     @classmethod
     def get_pid(cls, container_id):
