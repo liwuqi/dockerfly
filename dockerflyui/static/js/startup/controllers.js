@@ -8,7 +8,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         "eths": [
             [
                 "testDockerflyv0",
-                "eth0",
+                "eth1",
                 "172.16.13.100/24"
             ]
         ],
