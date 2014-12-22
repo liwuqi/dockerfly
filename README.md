@@ -49,6 +49,7 @@ Install:
     ```
 
 *  dockerfly:
+
     ```
     pip install dockerfly
     ```
@@ -95,6 +96,7 @@ this means:
     ```
      dockerflyctl run centos6.json
     ```
+
 output:
 
     ```
@@ -132,7 +134,7 @@ this is a clean image with sshd service and the default user/password is `root:r
 
 * start the container by dockerfly:
 
-    * create a config file: `dockerfly gen centos6_sshd.json`, modify to:
+    * create a config file: `dockerflyctl gen centos6_sshd.json`, modify to:
 
     ```
     [

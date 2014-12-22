@@ -1,7 +1,8 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
-"""dockerflyui run server scripts
+"""
+dockerflyui run server scripts
 
 Usage:
   servers.py <ip> <port>
