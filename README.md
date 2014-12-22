@@ -118,7 +118,7 @@ now you can visit `http://192.168.159.10` in Physical HostA.
 Best Practice:
 ========================
 
-dockerfly help you to create containers which shared local network by physical hosts, so the easiest way to use dockerfly is to create a container with ssd service.Then you can visit the container as the same as normal virtual machine.
+dockerfly help you to create containers which shared local network by physical hosts, so the easiest way to use dockerfly is to create a container with sshd service.Then you can visit the container as the same as normal virtual machine.
 
 steps:
 
