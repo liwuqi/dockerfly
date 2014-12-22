@@ -4,12 +4,12 @@ var startupControllers = angular.module('startupControllers', []);
 startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Container', function($scope, $http, $timeout, Container) {
   $scope.container_template =  [
       {
-        "gateway": "192.168.159.2",
+        "gateway": "172.16.13.1",
         "eths": [
             [
                 "testDockerflyv0",
                 "eth0",
-                "192.168.159.12/24"
+                "172.16.13.100/24"
             ]
         ],
         "image_name": "172.16.11.13:5000/brain/centos:centos6_sshd",
@@ -18,7 +18,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         "id":null,
         "pid":null,
         "status":"running",
-        "container_name":"yyyyyyyyyyyyyy",
+        "container_name":"test_dockerfly",
         "last_modify_time":0,
         "desc":"testfor dockerflyui"
     }
