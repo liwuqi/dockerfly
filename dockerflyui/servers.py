@@ -1,5 +1,21 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+"""dockerflyui run server scripts
+
+Usage:
+  servers.py <ip> <port>
+
+Options:
+  -h --help             Show this screen.
+
+Example:
+    runserver python dockerflyui/servers.py 0.0.0.0 80
+"""
+
 import requests
 from flask import render_template
+from docopt import docopt
 
 from flask import Flask, json, request
 from flask.ext.restful import reqparse, abort, Api, Resource
@@ -45,4 +61,5 @@ dockerflyui_api.add_resource(ContainerActive, '/api/container/<string:container_
 dockerflyui_api.add_resource(ContainerInactive, '/api/container/<string:container_id>/inactive')
 
 if __name__ == '__main__':
-    dockerflyui_app.run(host='0.0.0.0', port=80, debug=True)
+    arguments = docopt(__doc__)
+    dockerflyui_app.run(host=arguments['<ip>'], port=int(arguments['<port>']), debug=True)
