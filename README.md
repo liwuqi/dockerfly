@@ -125,10 +125,10 @@ steps:
 * pull a sshd image
 
     ```
-    docker pull docker.cn/memorybox/centos6_sshd
+    docker pull memorybox/centos6_sshd
     ```
 
-this is a clean image with sshd service and the default user/password is `root:rootroot`, [more info](https://docker.cn/memorybox/centos6_sshd)
+this is a clean image with sshd service and the default user/password is `root:rootroot`, [more info](https://registry.hub.docker.com/u/memorybox/centos6_sshd/)
 
 * start the container by dockerfly:
 
