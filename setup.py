@@ -28,7 +28,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 dockerfly_version = open(os.path.join(here, 'dockerfly/version.txt')).read().strip()
 
 try:
-    README = open(os.path.join(here, 'README.rst')).read()
+    README = open(os.path.join(here, 'README.md')).read()
 except:
     README = """\
 dockerfly is a small Docker tool to help you to
