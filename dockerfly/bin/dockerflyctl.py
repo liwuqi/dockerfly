@@ -5,23 +5,25 @@
 
 Usage:
   dockerflyctl.py ps
-  dockerflyctl.py gen      <config_json>
-  dockerflyctl.py run      <config_json>
-  dockerflyctl.py rm       <container_id>
-  dockerflyctl.py resize   <container_id> <new_size>
-  dockerflyctl.py getpid   <container_id>
+  dockerflyctl.py gen          <config_json>
+  dockerflyctl.py run          <config_json>
+  dockerflyctl.py rm           <container_id>
+  dockerflyctl.py resize       <container_id> <new_size>
+  dockerflyctl.py getpid       <container_id>
+  dockerflyctl.py rundaemon    <ip> <port>
 
 Options:
   -h --help             Show this screen.
   --version             Show version.
 
 Example:
-    show all containers             python2.7 dockerflyctl.py ps
-    generate container config       python2.7 dockerflyctl.py gen       centos6.json
-    start container                 python2.7 dockerflyctl.py run       centos6.json
-    remove container                python2.7 dockerflyctl.py rm        e5d898c10bff
-    resize container                python2.7 dockerflyctl.py resize    e5d898c10bff 20480
-    getpid container pid            python2.7 dockerflyctl.py getpid    e5d898c10bff
+    show all containers             python dockerflyctl.py ps
+    generate container config       python dockerflyctl.py gen       centos6.json
+    start container                 python dockerflyctl.py run       centos6.json
+    remove container                python dockerflyctl.py rm        e5d898c10bff
+    resize container                python dockerflyctl.py resize    e5d898c10bff 20480
+    getpid container pid            python dockerflyctl.py getpid    e5d898c10bff
+    run daemon server               python dockerflyctl.py rundaemon 0.0.0.0 5123
 """
 
 import json
@@ -32,6 +34,7 @@ import docker as dockerpy
 import include
 from dockerfly.settings import dockerfly_version
 from dockerfly.dockerlib.container import Container
+from dockerfly.bin.dockerflyd import rundaemon
 
 def main():
     arguments = docopt(__doc__, version=dockerfly_version)
@@ -81,6 +84,11 @@ def main():
 
     if arguments['getpid']:
         print docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
+
+    if arguments['getpid']:
+        print docker_cli.inspect_container(arguments['<container_id>'])['State']['Pid']
+        print "run dockerflyd server %s:%s" % (arguments['<ip>'], arguments['<port>'])
+        rundaemon(arguments['<ip>'], arguments['<port>'])
 
 if __name__ == '__main__':
     main()

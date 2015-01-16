@@ -53,9 +53,12 @@ context.signal_map = {
 mail_gid = grp.getgrnam('mail').gr_gid
 context.gid = mail_gid
 
-if __name__ == '__main__':
+def rundaemon(host, port):
     dockerflyd_setup()
 
     with context:
-        run_server(debug=True)
+        run_server(host=host, port=port, debug=True)
+
+if __name__ == '__main__':
+    rundaemon(host='0.0.0.0', port=5123)
 

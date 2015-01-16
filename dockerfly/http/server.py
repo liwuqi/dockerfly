@@ -1,7 +1,6 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
 import time
 from flask import Flask, request
 from flask import json
@@ -123,8 +122,8 @@ dockerfly_api.add_resource(ContainerInactive, '/v1/container/<string:container_i
 dockerfly_api.add_resource(ContainerTaskList, '/v1/container/<string:container_id>/tasks')
 dockerfly_api.add_resource(ContainerTask, '/v1/container/<string:container_id>/task/<string:task_id>')
 
-def run_server(debug=False):
-    dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host='0.0.0.0', port=5123)
+def run_server(host, port, debug=False):
+    dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
 
 if __name__ == '__main__':
-    run_server(True)
+    run_server(host='0.0.0.0', port=5123, debug=True)

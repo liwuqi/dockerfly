@@ -5,15 +5,18 @@
 dockerflyui run server scripts
 
 Usage:
-  servers.py <ip> <port>
+  servers.py <ip> <port> [--dockerflyd=<ip:port>]
 
 Options:
-  -h --help             Show this screen.
+  -h --help                 Show this screen.
+  --dockerflyd=<ip:port>    Set dockerflyd ip and port [default: 127.0.0.1:5123]
 
 Example:
     runserver python dockerflyui/servers.py 0.0.0.0 80
+    runserver python dockerflyui/servers.py 0.0.0.0 80 --dockerflyd 127.0.0.1:5123
 """
 
+import os
 import requests
 from flask import render_template
 from docopt import docopt
@@ -61,6 +64,11 @@ dockerflyui_api.add_resource(Container, '/api/container/<string:container_id>')
 dockerflyui_api.add_resource(ContainerActive, '/api/container/<string:container_id>/active')
 dockerflyui_api.add_resource(ContainerInactive, '/api/container/<string:container_id>/inactive')
 
+def runweb(host, port, daemon_server):
+    global dockerflyd_server
+    dockerflyd_server = os.path.join('http://', daemon_server)
+    dockerflyui_app.run(host=host, port=port, debug=True)
+
 if __name__ == '__main__':
     arguments = docopt(__doc__)
-    dockerflyui_app.run(host=arguments['<ip>'], port=int(arguments['<port>']), debug=True)
+    runweb(arguments['<ip>'], int(arguments['<port>']), arguments['--dockerflyd'])
