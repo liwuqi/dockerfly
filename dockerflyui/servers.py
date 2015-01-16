@@ -12,8 +12,8 @@ Options:
   --dockerflyd=<ip:port>    Set dockerflyd ip and port [default: 127.0.0.1:5123]
 
 Example:
-    runserver python dockerflyui/servers.py 0.0.0.0 80
-    runserver python dockerflyui/servers.py 0.0.0.0 80 --dockerflyd 127.0.0.1:5123
+    python dockerflyui/servers.py 0.0.0.0 80
+    python dockerflyui/servers.py 0.0.0.0 80 --dockerflyd 127.0.0.1:5123
 """
 
 import os
