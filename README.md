@@ -117,6 +117,30 @@ exec `docker ps`, you can find:
 
 now you can visit `http://192.168.159.10` in Physical HostA.
 
+Want a web shell:
+========================
+want a web shell?  Sure, just need three steps:
+
+* start dockerflyd service
+
+    ```
+      dockerflyctl rundaemon 0.0.0.0 5123
+    ```
+
+* get dockerflyui source
+
+    ```
+        git clone git@github.com:memoryboxes/dockerfly.git
+    ```
+
+* start dockerflyui service
+
+    ```
+      cd dockerfly/dockerflyui && python servers.py 0.0.0.0 80 --dockerflyd 127.0.0.1:5123
+    ```
+
+then you can visit `http://host:80` to create/remove your container
+
 Best Practice:
 ========================
 
