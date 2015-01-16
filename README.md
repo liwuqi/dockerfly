@@ -117,9 +117,9 @@ exec `docker ps`, you can find:
 
 now you can visit `http://192.168.159.10` in Physical HostA.
 
-Want a web shell:
+Web shell:
 ========================
-want a web shell?  Sure, just need three steps:
+want a web shell?  Sure, just three steps:
 
 * start dockerflyd service
 
