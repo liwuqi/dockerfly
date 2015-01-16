@@ -4,26 +4,26 @@
 """dockerfly bin tool
 
 Usage:
-  dockerflyctl.py ps
-  dockerflyctl.py gen          <config_json>
-  dockerflyctl.py run          <config_json>
-  dockerflyctl.py rm           <container_id>
-  dockerflyctl.py resize       <container_id> <new_size>
-  dockerflyctl.py getpid       <container_id>
-  dockerflyctl.py rundaemon    <ip> <port>
+  dockerflyctl    ps
+  dockerflyctl    gen          <config_json>
+  dockerflyctl    run          <config_json>
+  dockerflyctl    rm           <container_id>
+  dockerflyctl    resize       <container_id> <new_size>
+  dockerflyctl    getpid       <container_id>
+  dockerflyctl    rundaemon    <ip> <port>
 
 Options:
   -h --help             Show this screen.
   --version             Show version.
 
 Example:
-    show all containers             python dockerflyctl.py ps
-    generate container config       python dockerflyctl.py gen       centos6.json
-    start container                 python dockerflyctl.py run       centos6.json
-    remove container                python dockerflyctl.py rm        e5d898c10bff
-    resize container                python dockerflyctl.py resize    e5d898c10bff 20480
-    getpid container pid            python dockerflyctl.py getpid    e5d898c10bff
-    run daemon server               python dockerflyctl.py rundaemon 0.0.0.0 5123
+    show all containers             dockerflyctl    ps
+    generate container config       dockerflyctl    gen       centos6.json
+    start container                 dockerflyctl    run       centos6.json
+    remove container                dockerflyctl    rm        e5d898c10bff
+    resize container                dockerflyctl    resize    e5d898c10bff 20480
+    getpid container pid            dockerflyctl    getpid    e5d898c10bff
+    run daemon server               dockerflyctl    rundaemon 0.0.0.0 5123
 """
 
 import json
