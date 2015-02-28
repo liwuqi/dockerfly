@@ -12,8 +12,8 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
                 "172.16.13.100/24"
             ]
         ],
-        "image_name": "172.16.11.13:5000/brain/centos:centos6_sshd",
-        "run_cmd": "/usr/sbin/sshd -D",
+        "image_name": "docker-registry.dev.netis.com.cn:5000/crossflow/centos6",
+        "run_cmd": "/usr/bin/svscan /etc/dockerservice",
         "id":null,
         "pid":null,
         "status":"running",
