@@ -13,7 +13,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
             ]
         ],
         "image_name": "docker-registry.dev.netis.com.cn:5000/crossflow/centos6",
-        "run_cmd": "/usr/bin/svscan /etc/dockerservice",
+        "run_cmd": "/usr/bin/svscan /etc/dockerservices",
         "id":null,
         "pid":null,
         "status":"running",
