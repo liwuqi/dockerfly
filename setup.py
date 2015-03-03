@@ -13,7 +13,7 @@ elif (3, 0) < py_version < (3, 2):
 
 requires = ['sh >= 1.09', 'docker-py >= 0.6.0',
             'docopt >= 0.6.1', 'flask >= 0.10.1', 'python-daemon >= 1.5.6',
-            'flask-restful >= 0.3.0', 'requests >= 2.5.0']
+            'flask-restful >= 0.3.0', 'requests >= 2.4.0']
 
 tests_require = []
 if py_version < (3, 3):
