@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import traceback
 from flask import Flask, request
 from flask import json
 from flask.ext.restful import reqparse, abort, Api, Resource
@@ -17,7 +18,7 @@ def abort_if_container_doesnt_exist(container_id):
     for item in ContainerStatus.get_all_status():
         if len(container_id) >= 12 and item['id'].startswith(container_id):
             return item['id']
-    abort(404, message="Container {} doesn't exist".format(container_id))
+    abort(404, message= json.dumps({'error' : "{Container {} doesn't exist".format(container_id)}))
 
 class Version(Resource):
     def get(self):
@@ -49,20 +50,23 @@ class ContainerList(Resource):
                 "desc": "create a container by template"
             }
         """
-        create_containers_json = request.get_json()
-        for container in create_containers_json:
-            container['id'] = ContainerCtl.create(container['image_name'],
-                                                  container['run_cmd'],
-                                                  container['container_name'])
-            ContainerCtl.start(container['id'],
-                               container['eths'],
-                               container['gateway'])
-            if container.get('resize', None):
-                ContainerCtl.resize(container['id'], container['resize'])
-            container['pid'] = ContainerCtl.get_pid(container['id'])
-            container['last_modify_time'] = time.time()
-        ContainerStatus.add_status(create_containers_json)
-        return create_containers_json, 201
+        try:
+            create_containers_json = request.get_json()
+            for container in create_containers_json:
+                container['id'] = ContainerCtl.create(container['image_name'],
+                                                      container['run_cmd'],
+                                                      container['container_name'])
+                ContainerCtl.start(container['id'],
+                                   container['eths'],
+                                   container['gateway'])
+                if container.get('resize', None):
+                    ContainerCtl.resize(container['id'], container['resize'])
+                container['pid'] = ContainerCtl.get_pid(container['id'])
+                container['last_modify_time'] = time.time()
+            ContainerStatus.add_status(create_containers_json)
+            return create_containers_json, 201
+        except:
+            return {'msg':traceback.format_exc()}, 500
 
 class Container(Resource):
     def get(self, container_id):

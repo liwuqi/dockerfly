@@ -40,6 +40,9 @@ def dockerflyd_cleanup():
 def dockerflyd_reload_config():
     pass
 
+def terminate():
+    os.kill(os.getpid(), signal.SIGTERM)
+
 context = daemon.DaemonContext(
     working_directory=working_directory,
     umask=0o002,
@@ -49,7 +52,7 @@ context = daemon.DaemonContext(
 
 context.signal_map = {
     signal.SIGTERM: dockerflyd_cleanup,
-    signal.SIGHUP: 'terminate',
+    signal.SIGHUP: terminate,
     signal.SIGUSR1: dockerflyd_reload_config,
     }
 
