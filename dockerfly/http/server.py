@@ -24,6 +24,10 @@ class Version(Resource):
     def get(self):
         return {'version':dockerfly_version}
 
+class FetchError(Resource):
+    def get(self):
+        return {'error':dockerfly_version}, 200
+
 class ContainerList(Resource):
     def get(self):
         return ContainerStatus.get_all_status()
@@ -119,6 +123,7 @@ class ContainerTask(Resource):
         return {'errMsg':'Not Implement'}, 400
 
 dockerfly_api.add_resource(Version, '/v1/version')
+dockerfly_api.add_resource(FetchError, '/v1/fetcherror')
 dockerfly_api.add_resource(ContainerList, '/v1/containers')
 dockerfly_api.add_resource(Container, '/v1/container/<string:container_id>')
 dockerfly_api.add_resource(ContainerActive, '/v1/container/<string:container_id>/active')

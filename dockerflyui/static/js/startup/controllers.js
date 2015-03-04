@@ -2,12 +2,15 @@ $('.collapse').collapse({toggle:true});
 var startupControllers = angular.module('startupControllers', []);
 
 startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Container', function($scope, $http, $timeout, Container) {
+  if (!Date.now) {
+      Date.now = function() { return new Date().getTime(); }
+  }
   $scope.container_template =  [
       {
         "gateway": "172.16.13.1",
         "eths": [
             [
-                "testDockerflyv0",
+                "veth"+Date.now(),
                 "eth1",
                 "172.16.13.100/24"
             ]
@@ -17,9 +20,9 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         "id":null,
         "pid":null,
         "status":"running",
-        "container_name":"test_dockerfly",
+        "container_name":"yourname_crossflowname_for_xxx",
         "last_modify_time":0,
-        "desc":"testfor dockerflyui"
+        "desc":"testfor crossflow"
     }
   ];
 
