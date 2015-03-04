@@ -8,7 +8,7 @@ import shutil
 
 from dockerfly import settings
 
-db_dir = settings.default_db_dir
+db_dir = settings.DB_ROOT
 dbs = settings.dbs
 
 def init_db(func):

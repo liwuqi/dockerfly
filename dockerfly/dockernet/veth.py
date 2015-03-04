@@ -3,6 +3,11 @@
 
 import random
 from sh import nsenter, ip
+from dockerfly.errors import (VEthCreateException, VEthUpException,
+                              VEthDownException, VEthAttachException,
+                              VEthDeleteException)
+from dockerfly.logger import getLogger
+logger = getLogger()
 
 class VEth(object):
     """support ip link add vethxxx ...
@@ -61,42 +66,57 @@ class MacvlanEth(VEth):
         self._attach_to_container_pid = None
 
     def create(self):
-        ip('link', 'add', self._veth_name,
-           'link', self._link_to, 'address', self.gen_mac_address(), 'type', 'macvlan', 'mode', 'bridge')
+        try:
+            ip('link', 'add', self._veth_name,
+                'link', self._link_to, 'address', self.gen_mac_address(), 'type', 'macvlan', 'mode', 'bridge')
+        except Exception as e:
+            raise VEthCreateException("create macvlan eth error:\n{}".format(e.message))
         return self
 
     def up(self):
-        if self._is_attach_to_container:
-            nsenter('-t', self._attach_to_container_pid,
-                    '-n', 'ip', 'link', 'del', self._veth_name)
-        else:
-            ip('link', 'set', self._veth_name, 'up')
+        try:
+            if self._is_attach_to_container:
+                nsenter('-t', self._attach_to_container_pid,
+                        '-n', 'ip', 'link', 'del', self._veth_name)
+            else:
+                ip('link', 'set', self._veth_name, 'up')
+        except Exception as e:
+            raise VEthUpException("up macvlan eth error:\n{}".format(e.message))
         return self
 
     def down(self):
-        if self._is_attach_to_container:
-            nsenter('-t', self._attach_to_container_pid,
-                    '-n', 'ip', 'link', self._veth_name, 'down')
-        else:
-            ip('link', 'set', self._veth_name, 'down')
+        try:
+            if self._is_attach_to_container:
+                nsenter('-t', self._attach_to_container_pid,
+                        '-n', 'ip', 'link', self._veth_name, 'down')
+            else:
+                ip('link', 'set', self._veth_name, 'down')
+        except Exception as e:
+            raise VEthDownException("down macvlan eth error:\n{}".format(e.message))
         return self
 
     def delete(self):
-        if self._is_attach_to_container:
-            nsenter('-t', self._attach_to_container_pid,
-                    '-n', 'ip', 'link', 'del', self._veth_name)
-        else:
-            ip('link', 'del', self._veth_name)
+        try:
+            if self._is_attach_to_container:
+                nsenter('-t', self._attach_to_container_pid,
+                        '-n', 'ip', 'link', 'del', self._veth_name)
+            else:
+                ip('link', 'del', self._veth_name)
+        except Exception as e:
+            raise VEthDeleteException("delete macvlan eth error:\n{}".format(e.message))
 
     def attach_to_container(self, container_pid, is_route=False, gateway=None):
         self._is_attach_to_container = True
         self._attach_to_container_pid = container_pid
 
-        ip('link', 'set', 'netns', self._attach_to_container_pid, self._veth_name)
-        nsenter('-t', self._attach_to_container_pid,
-                '-n', 'ip', 'link', 'set', self._veth_name, 'up')
-        nsenter('-t', self._attach_to_container_pid,
-                '-n', 'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
+        try:
+            ip('link', 'set', 'netns', self._attach_to_container_pid, self._veth_name)
+            nsenter('-t', self._attach_to_container_pid,
+                    '-n', 'ip', 'link', 'set', self._veth_name, 'up')
+            nsenter('-t', self._attach_to_container_pid,
+                    '-n', 'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
+        except Exception as e:
+            raise VEthAttachException("attach macvlan eth error:\n{}".format(e.message))
 
         if is_route:
             if not gateway:
@@ -110,7 +130,7 @@ class MacvlanEth(VEth):
                 try:
                     nsenter('-t', self._attach_to_container_pid,
                             '-n', 'ping', '-c', '1', gateway)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(e.message)
 
         return self

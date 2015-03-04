@@ -3,31 +3,25 @@
 
 import os
 import grp
-import logging
 import signal
 import daemon
 import lockfile
 
 import include
 from dockerfly.settings import dockerfly_version
+from dockerfly.settings import RUN_ROOT, LOG_ROOT, DB_ROOT
+from dockerfly.logger import getLogger, getFh
 from dockerfly.http.server import run_server
 
-working_directory = '/var/run/dockerfly'
-logging_directory = os.path.join(working_directory, 'log')
+if not os.path.exists(RUN_ROOT):
+    os.mkdir(RUN_ROOT)
+if not os.path.exists(LOG_ROOT):
+    os.mkdir(LOG_ROOT)
+if not os.path.exists(DB_ROOT):
+    os.mkdir(LOG_ROOT)
 
-if not os.path.exists(working_directory):
-    os.mkdir(working_directory)
-if not os.path.exists(logging_directory):
-    os.mkdir(logging_directory)
-
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(os.path.join(logging_directory, 'dockerflyd.log'))
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
-
-pid_file = os.path.join(working_directory, 'dockerflyd.pid.lock')
+pid_file = os.path.join(RUN_ROOT, 'dockerflyd.pid.lock')
+logger = getLogger()
 
 def dockerflyd_setup():
     if os.path.exists(pid_file):
@@ -44,10 +38,10 @@ def terminate():
     os.kill(os.getpid(), signal.SIGTERM)
 
 context = daemon.DaemonContext(
-    working_directory=working_directory,
+    RUN_ROOT=RUN_ROOT,
     umask=0o002,
-    pidfile=lockfile.FileLock(os.path.join(working_directory, 'dockerflyd.pid')),
-    files_preserve = [fh.stream,],
+    pidfile=lockfile.FileLock(os.path.join(RUN_ROOT, 'dockerflyd.pid')),
+    files_preserve = [getFh().stream,],
 )
 
 context.signal_map = {
