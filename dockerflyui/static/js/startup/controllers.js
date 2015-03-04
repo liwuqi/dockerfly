@@ -12,7 +12,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
             [
                 "veth"+Date.now(),
                 "eth1",
-                "172.16.13.100/24"
+                "172.16.13.254/24"
             ]
         ],
         "image_name": "docker-registry.dev.netis.com.cn:5000/crossflow/bpc3",
