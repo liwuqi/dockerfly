@@ -10,7 +10,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         "gateway": "172.16.13.1",
         "eths": [
             [
-                "veth"+Date.now(),
+                "v"+ Math.floor(Date.now()/1000),
                 "eth1",
                 "172.16.13.254/24"
             ]
