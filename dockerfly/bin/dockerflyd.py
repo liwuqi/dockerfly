@@ -38,7 +38,7 @@ def terminate():
     os.kill(os.getpid(), signal.SIGTERM)
 
 context = daemon.DaemonContext(
-    RUN_ROOT=RUN_ROOT,
+    working_directory=RUN_ROOT,
     umask=0o002,
     pidfile=lockfile.FileLock(os.path.join(RUN_ROOT, 'dockerflyd.pid')),
     files_preserve = [getFh().stream,],

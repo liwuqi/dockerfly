@@ -83,6 +83,9 @@ class ContainerList(Resource):
             return {"errno":e.errno, "errMsg":e.message}, 400
 
         except Exception as e:
+            if container.get('id', None):
+                ContainerCtl.remove(container['id'])
+
             logger.error(traceback.format_exc())
             return {"errno":1000, "errMsg":e.message}, 400
 

@@ -15,6 +15,6 @@ def getLogger():
     logger.addHandler(_fh)
     return logger
 
-def getFn():
+def getFh():
     return _fh
 
