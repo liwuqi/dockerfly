@@ -11,7 +11,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         "eths": [
             [
                 "v"+ Math.floor(Date.now()/1000),
-                "eth1",
+                "em2",
                 "172.16.13.254/24"
             ]
         ],
