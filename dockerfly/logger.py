@@ -13,6 +13,7 @@ def getLogger():
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     _fh.setFormatter(formatter)
     logger.addHandler(_fh)
+    return logger
 
 def getFn():
     return _fh

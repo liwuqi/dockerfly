@@ -12,15 +12,20 @@ from dockerfly.settings import dockerfly_version
 from dockerfly.runtime import container as ContainerStatus
 from dockerfly.dockerlib.container import Container as ContainerCtl
 from dockerfly.errors import DockerflyException
+from dockerfly.logger import getLogger
 
 dockerfly_app = Flask(__name__)
 dockerfly_api = Api(dockerfly_app)
+logger = getLogger()
 
 def abort_if_container_doesnt_exist(container_id):
     for item in ContainerStatus.get_all_status():
         if len(container_id) >= 12 and item['id'].startswith(container_id):
             return item['id']
-    abort(404, message= json.dumps({'errMsg' : "Container {} doesn't exist".format(container_id)}))
+    abort(404, message= json.dumps(
+                {'errno':1000,
+                'errMsg' : "Container {} doesn't exist".format(container_id)})
+            )
 
 class Version(Resource):
     def get(self):
@@ -55,11 +60,12 @@ class ContainerList(Resource):
         try:
             create_containers_json = request.get_json()
             for container in create_containers_json:
+                for eth in container['eths']:
+                    ContainerStatus.verify_eths(eth[0], eth[2])
+
                 container['id'] = ContainerCtl.create(container['image_name'],
                                                       container['run_cmd'],
                                                       container['container_name'])
-                for eth in container['eths']:
-                    ContainerStatus.verify_eths(eth[0], eth[2])
 
                 ContainerCtl.start(container['id'],
                                    container['eths'],
@@ -69,13 +75,15 @@ class ContainerList(Resource):
                     ContainerCtl.resize(container['id'], container['resize'])
                 container['pid'] = ContainerCtl.get_pid(container['id'])
                 container['last_modify_time'] = time.time()
+
             ContainerStatus.add_status(create_containers_json)
             return create_containers_json, 201
 
-        except DockerflyException, e:
+        except DockerflyException as e:
             return {"errno":e.errno, "errMsg":e.message}, 400
 
-        except Exception, e:
+        except Exception as e:
+            logger.error(traceback.format_exc())
             return {"errno":1000, "errMsg":e.message}, 400
 
 class Container(Resource):
@@ -93,6 +101,7 @@ class Container(Resource):
             return {"errno":e.errno, "errMsg":e.message}, 400
 
         except Exception, e:
+            logger.error(traceback.format_exc())
             return {"errno":1000, "errMsg":e.message}, 400
 
         return {'msg':'OK'}, 200
@@ -114,6 +123,7 @@ class ContainerActive(Resource):
             return {"errno":e.errno, "errMsg":e.message}, 400
 
         except Exception, e:
+            logger.error(traceback.format_exc())
             return {"errno":1000, "errMsg":e.message}, 400
 
 class ContainerInactive(Resource):
@@ -132,6 +142,7 @@ class ContainerInactive(Resource):
             return {"errno":e.errno, "errMsg":e.message}, 400
 
         except Exception, e:
+            logger.error(traceback.format_exc())
             return {"errno":1000, "errMsg":e.message}, 400
 
 class ContainerTaskList(Resource):

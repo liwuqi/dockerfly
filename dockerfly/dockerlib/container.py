@@ -5,11 +5,16 @@ import os
 import sh
 import time
 import glob
+import traceback
 import docker as dockerpy
 from datetime import datetime
 
 from dockerfly.dockernet.veth import MacvlanEth
 from dockerfly.dockerlib.libs import run_in_process
+from dockerfly.errors import ContainerActionError
+from dockerfly.logger import getLogger
+
+logger = getLogger()
 
 class Container(object):
 
@@ -30,8 +35,13 @@ class Container(object):
         Return:
             container_id
         """
-        container_id = cls.create(image_name, run_cmd)
-        cls.start(container_id, veths, gateway)
+        try:
+            container_id = cls.create(image_name, run_cmd)
+            cls.start(container_id, veths, gateway)
+        except dockerpy.errors.APIError as e:
+            logger.error(traceback.format_exc())
+            raise ContainerActionError(e.message)
+
         return container_id
 
     @classmethod
@@ -40,15 +50,24 @@ class Container(object):
         if not container_name:
             container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
                                               datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S'))
-        container = cls.docker_cli.create_container(image=image_name,
+        try:
+            container = cls.docker_cli.create_container(image=image_name,
                                                     command=run_cmd,
                                                     name=container_name)
+        except dockerpy.errors.APIError as e:
+            logger.error(traceback.format_exc())
+            raise ContainerActionError(e.message)
+
         return container.get('Id')
 
     @classmethod
     def start(cls, container_id, veths, gateway):
         """start eths and continer"""
-        cls.docker_cli.start(container=container_id, privileged=True)
+        try:
+            cls.docker_cli.start(container=container_id, privileged=True)
+        except dockerpy.errors.APIError as e:
+            logger.error(traceback.format_exc())
+            raise ContainerActionError(e.message)
 
         for index, (veth, link_to, ip_netmask) in enumerate(veths):
             macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
@@ -63,13 +82,21 @@ class Container(object):
     @classmethod
     def stop(cls, container_id):
         """stop continer"""
-        cls.docker_cli.stop(container_id)
+        try:
+            cls.docker_cli.stop(container_id)
+        except dockerpy.errors.APIError as e:
+            logger.error(traceback.format_exc())
+            raise ContainerActionError(e.message)
 
     @classmethod
     def remove(cls, container_id):
         """remove eths and continer"""
-        cls.docker_cli.stop(container_id)
-        cls.docker_cli.remove_container(container_id)
+        try:
+            cls.docker_cli.stop(container_id)
+            cls.docker_cli.remove_container(container_id)
+        except dockerpy.errors.APIError as e:
+            logger.error(traceback.format_exc())
+            raise ContainerActionError(e.message)
 
     @classmethod
     def resize(cls, container_id, new_size=10240):
@@ -93,5 +120,10 @@ class Container(object):
 
     @classmethod
     def get_pid(cls, container_id):
-        return cls.docker_cli.inspect_container(container_id)['State']['Pid']
+        try:
+            pid = cls.docker_cli.inspect_container(container_id)['State']['Pid']
+        except dockerpy.errors.APIError as e:
+            logger.error(traceback.format_exc())
+            raise ContainerActionError(e.message)
+        return pid
 

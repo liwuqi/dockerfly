@@ -48,3 +48,7 @@ class VEthStatusException(DockerflyException):
 
     def __init__(self, message, errno=105):
         super(VEthStatusException, self).__init__(message, errno)
+
+class ContainerActionError(DockerflyException):
+    def __init__(self, message, errno=201):
+        super(ContainerActionError, self).__init__(message, errno)

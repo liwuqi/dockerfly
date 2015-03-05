@@ -21,9 +21,9 @@ def verify_eths(eth_name, eth_ip):
         raise VEthStatusException("invalid eth name:{}".format(eth_name))
 
     try:
-        socket.inet_aton(eth_ip)
-    except socket.error:
-        raise VEthStatusException("invalid ip address:{}".format(eth_ip))
+        socket.inet_aton(eth_ip.split('/')[0])
+    except socket.error as e:
+        raise VEthStatusException("invalid ip address:{}, {}".format(eth_ip, e.message))
 
     all_eths_status = []
     for container in get_all_status():
@@ -34,7 +34,7 @@ def verify_eths(eth_name, eth_ip):
 
     if eth_name in all_eth_names:
         raise VEthStatusException("eth name has already existed")
-    if eth_name in all_eth_ips:
+    if eth_ip in all_eth_ips:
         raise VEthStatusException("eth ip has already existed")
 
 def update_status(containers):
