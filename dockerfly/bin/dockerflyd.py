@@ -18,7 +18,7 @@ if not os.path.exists(RUN_ROOT):
 if not os.path.exists(LOG_ROOT):
     os.mkdir(LOG_ROOT)
 if not os.path.exists(DB_ROOT):
-    os.mkdir(LOG_ROOT)
+    os.mkdir(DB_ROOT)
 
 pid_file = os.path.join(RUN_ROOT, 'dockerflyd.pid.lock')
 logger = getLogger()
