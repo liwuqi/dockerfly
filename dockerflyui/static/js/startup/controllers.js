@@ -1,5 +1,5 @@
 $('.collapse').collapse({toggle:true});
-var startupControllers = angular.module('startupControllers', []);
+var startupControllers = angular.module('startupControllers', ['ui.bootstrap']);
 
 startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Container', function($scope, $http, $timeout, Container) {
   if (!Date.now) {
@@ -29,7 +29,13 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
   $scope.createContainer = function(container_template) {
     console.log("create container")
     console.log(container_template);
-    $http.post('/api/containers', data=container_template);
+    $http.post('/api/containers', data=container_template)
+    .success(function(data, status, headers, config){
+        alert("OK.\nstatus:" + status.toString() + "\n" + JSON.stringify(data, null, 2));
+    })
+    .error(function(data, status, headers, config){
+        alert("Error.\n" + status.toString() "\n" + JSON.stringify(data, null, 2));
+    });
   };
 
   $scope.$on('json-updated', function(msg, value) {
