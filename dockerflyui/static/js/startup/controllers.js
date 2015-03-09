@@ -31,10 +31,10 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
     console.log(container_template);
     $http.post('/api/containers', data=container_template)
     .success(function(data, status, headers, config){
-        alert("OK.\nstatus:" + status.toString() + "\n" + JSON.stringify(data, null, 2));
+        alert("status:" + status.toString() + "\n" + JSON.stringify(data, null, 2));
     })
     .error(function(data, status, headers, config){
-        alert("Error.\n" + status.toString() + "\n" + JSON.stringify(data, null, 2));
+        alert("status" + status.toString() + "\n" + JSON.stringify(data, null, 2));
     });
   };
 
