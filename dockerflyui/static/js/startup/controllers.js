@@ -34,7 +34,7 @@ startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Co
         alert("OK.\nstatus:" + status.toString() + "\n" + JSON.stringify(data, null, 2));
     })
     .error(function(data, status, headers, config){
-        alert("Error.\n" + status.toString() "\n" + JSON.stringify(data, null, 2));
+        alert("Error.\n" + status.toString() + "\n" + JSON.stringify(data, null, 2));
     });
   };
 
