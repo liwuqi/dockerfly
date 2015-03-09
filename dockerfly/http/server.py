@@ -58,6 +58,7 @@ class ContainerList(Resource):
             }
         """
         try:
+            container = None
             create_containers_json = request.get_json()
             for container in create_containers_json:
                 for eth in container['eths']:
@@ -83,11 +84,14 @@ class ContainerList(Resource):
             return {"errno":e.errno, "errMsg":e.message}, 400
 
         except Exception as e:
-            if container.get('id', None):
+            logger.error(traceback.format_exc())
+            if container and container.get('id', None):
                 ContainerCtl.remove(container['id'])
 
-            logger.error(traceback.format_exc())
-            return {"errno":1000, "errMsg":e.message}, 400
+            if not container:
+                return {"errno":1000, "errMsg":"invalid json request"}, 400
+            else:
+                return {"errno":1000, "errMsg":e.message}, 400
 
 class Container(Resource):
     def get(self, container_id):

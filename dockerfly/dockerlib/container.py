@@ -40,7 +40,7 @@ class Container(object):
             cls.start(container_id, veths, gateway)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
-            raise ContainerActionError(e.message)
+            raise ContainerActionError(str(e))
 
         return container_id
 
@@ -56,7 +56,7 @@ class Container(object):
                                                     name=container_name)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
-            raise ContainerActionError(e.message)
+            raise ContainerActionError(str(e))
 
         return container.get('Id')
 
@@ -67,7 +67,7 @@ class Container(object):
             cls.docker_cli.start(container=container_id, privileged=True)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
-            raise ContainerActionError(e.message)
+            raise ContainerActionError(str(e))
 
         for index, (veth, link_to, ip_netmask) in enumerate(veths):
             macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
@@ -86,7 +86,7 @@ class Container(object):
             cls.docker_cli.stop(container_id)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
-            raise ContainerActionError(e.message)
+            raise ContainerActionError(str(e))
 
     @classmethod
     def remove(cls, container_id):
@@ -96,7 +96,7 @@ class Container(object):
             cls.docker_cli.remove_container(container_id)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
-            raise ContainerActionError(e.message)
+            raise ContainerActionError(str(e))
 
     @classmethod
     def resize(cls, container_id, new_size=10240):
@@ -124,6 +124,6 @@ class Container(object):
             pid = cls.docker_cli.inspect_container(container_id)['State']['Pid']
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
-            raise ContainerActionError(e.message)
+            raise ContainerActionError(str(e))
         return pid
 
