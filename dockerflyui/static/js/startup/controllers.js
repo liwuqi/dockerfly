@@ -1,5 +1,5 @@
 $('.collapse').collapse({toggle:true});
-var startupControllers = angular.module('startupControllers', ['ui.bootstrap']);
+var startupControllers = angular.module('startupControllers', []);
 
 startupControllers.controller('StartupCtrl', ['$scope', '$http', '$timeout', 'Container', function($scope, $http, $timeout, Container) {
   if (!Date.now) {
