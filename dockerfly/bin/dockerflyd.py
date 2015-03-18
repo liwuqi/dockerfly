@@ -12,11 +12,11 @@ from dockerfly.settings import dockerfly_version
 from dockerfly.settings import RUN_ROOT, LOG_ROOT, DB_ROOT
 
 if not os.path.exists(RUN_ROOT):
-    os.mkdirs(RUN_ROOT)
+    os.makedirs(RUN_ROOT)
 if not os.path.exists(LOG_ROOT):
-    os.mkdirs(LOG_ROOT)
+    os.makedirs(LOG_ROOT)
 if not os.path.exists(DB_ROOT):
-    os.mkdirs(DB_ROOT)
+    os.makedirs(DB_ROOT)
 
 from dockerfly.logger import getLogger, getFh
 from dockerfly.http.server import run_server
