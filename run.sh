@@ -10,5 +10,5 @@ ps aux|grep dockerflyd|grep -v grep|awk '{print $2}'|xargs kill -9
 python  $BASE_PATH/dockerfly/bin/dockerflyd.py
 echo "dockerflyd Server is running"
 
-nohup python $BASE_PATH/dockerflyui/server.py 0.0.0.0 80 $1 > $LOG_FILE 2>&1 & echo $! > $PID_FILE
+nohup python $BASE_PATH/dockerflyui/servers.py 0.0.0.0 80 $1 > $LOG_FILE 2>&1 & echo $! > $PID_FILE
 echo "dockerflyui Server is running"
