@@ -13,6 +13,12 @@ from dockerfly.settings import RUN_ROOT, LOG_ROOT, DB_ROOT
 from dockerfly.logger import getLogger, getFh
 from dockerfly.http.server import run_server
 
+if not os.path.exists(RUN_ROOT):
+    os.mkdirs(RUN_ROOT)
+if not os.path.exists(LOG_ROOT):
+    os.mkdirs(LOG_ROOT)
+if not os.path.exists(DB_ROOT):
+    os.mkdirs(DB_ROOT)
 
 pid_file = os.path.join(RUN_ROOT, 'dockerflyd.pid.lock')
 logger = getLogger()
@@ -54,12 +60,6 @@ def rundaemon(host, port):
         run_server(host=host, port=port, debug=True)
 
 if __name__ == '__main__':
-    if not os.path.exists(RUN_ROOT):
-        os.mkdirs(RUN_ROOT)
-    if not os.path.exists(LOG_ROOT):
-        os.mkdirs(LOG_ROOT)
-    if not os.path.exists(DB_ROOT):
-        os.mkdirs(DB_ROOT)
 
     rundaemon(host='0.0.0.0', port=5123)
 
