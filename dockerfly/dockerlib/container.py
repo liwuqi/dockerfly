@@ -18,7 +18,7 @@ logger = getLogger()
 
 class Container(object):
 
-    docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
+    docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock', timeout=300)
 
     @classmethod
     @run_in_process
@@ -93,7 +93,7 @@ class Container(object):
         """remove eths and continer"""
         try:
             cls.docker_cli.stop(container_id)
-            cls.docker_cli.remove_container(container_id, timeout=300)
+            cls.docker_cli.remove_container(container_id)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
             raise ContainerActionError(str(e))
