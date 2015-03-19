@@ -93,7 +93,7 @@ class Container(object):
         """remove eths and continer"""
         try:
             cls.docker_cli.stop(container_id)
-            cls.docker_cli.remove_container(container_id)
+            cls.docker_cli.remove_container(container_id, timeout=300)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
             raise ContainerActionError(str(e))
