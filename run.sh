@@ -6,7 +6,7 @@ if [ -f "$PID_FILE" ]; then
     cat $PID_FILE | xargs kill -9
 fi
 
-ps aux|grep dockerflyd|grep -v grep|awk '{print $2}'|xargs kill -9
+ps aux|grep dockerflyd|grep -v grep|awk '{print $2}'|xargs kill
 python  $BASE_PATH/dockerfly/bin/dockerflyd.py
 echo "dockerflyd Server is running"
 
