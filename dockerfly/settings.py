@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 dockerfly_version = open(os.path.join(here, 'version.txt')).read().strip()
 
 #database
-RUN_ROOT= '/var/run/dockerfly'
+RUN_ROOT= '/var/dockerfly'
 LOG_ROOT = os.path.join(RUN_ROOT, 'log')
 DB_ROOT  = os.path.join(RUN_ROOT, 'db')
 
