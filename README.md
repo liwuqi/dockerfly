@@ -51,7 +51,7 @@ Install:
 *  dockerfly:
 
     ```
-    pip install dockerfly
+    git clone https://github.com/memoryboxes/dockerfly.git
     ```
 
 How to use:
@@ -119,24 +119,13 @@ now you can visit `http://192.168.159.10` in Physical HostA.
 
 Web shell:
 ========================
-want a web shell?  Sure, just three steps:
+want a web shell?  Sure, just one step:
 
-* start dockerflyd service
 
-    ```
-      dockerflyctl rundaemon 0.0.0.0 5123
-    ```
-
-* get dockerflyui source
+* start dockerflyd and dockerflyui service
 
     ```
-        git clone git@github.com:memoryboxes/dockerfly.git
-    ```
-
-* start dockerflyui service
-
-    ```
-      cd dockerfly/dockerflyui && python servers.py 0.0.0.0 80 --dockerflyd 127.0.0.1:5123
+        ./run.sh
     ```
 
 then you can visit `http://host:80` to create/remove your container
@@ -177,7 +166,7 @@ this is a clean image with sshd service and the default user/password is `root:r
                 ]
             ],
             "image_name": "docker.cn/memorybox/centos6_sshd",
-            "run_cmd": "/run.sh"
+            "run_cmd": "/usr/bin/svscan /etc/dockerservices"
         }
     ]
     ```
