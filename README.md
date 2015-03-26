@@ -51,7 +51,7 @@ Install:
 *  dockerfly:
 
     ```
-    git clone https://github.com/memoryboxes/dockerfly.git
+    git clone https://github.com/memoryboxes/dockerfly.git && python dockerfly/setup.py install
     ```
 
 How to use:
