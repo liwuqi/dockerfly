@@ -81,6 +81,9 @@ class ContainerList(Resource):
             return create_containers_json, 201
 
         except DockerflyException as e:
+            logger.error(traceback.format_exc())
+            if container and container.get('id', None):
+                ContainerCtl.remove(container['id'])
             return {"errno":e.errno, "errMsg":e.message}, 400
 
         except Exception as e:
