@@ -8,6 +8,7 @@ import glob
 import traceback
 import docker as dockerpy
 from datetime import datetime
+from docker.utils import create_host_config
 
 from dockerfly.dockernet.veth import MacvlanEth
 from dockerfly.dockerlib.libs import run_in_process
@@ -64,7 +65,9 @@ class Container(object):
     def start(cls, container_id, veths, gateway):
         """start eths and continer"""
         try:
-            cls.docker_cli.start(container=container_id, privileged=True)
+            cls.docker_cli.start(container=container_id,
+                                 extra_hosts={'ldap.netis.com.cn':'172.16.11.3'},
+                                 privileged=True)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
             raise ContainerActionError(str(e))
