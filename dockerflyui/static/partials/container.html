@@ -1,8 +1,11 @@
-<div class="container">
-  <hr>
-  <div class="row">
-    <div class="col-xs-12">
-      Search: <input class="col-xs-12" ng-model="query">
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span12">
+      Search: <input ng-model="query">
+      Sort by:
+      <select ng-model="orderProp">
+        <option value="mtime">Newest</option>
+      </select>
     </div>
   </div>
 
