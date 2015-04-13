@@ -5,7 +5,7 @@ angular.module('myApp.container', ['ngRoute', 'containerControllers', 'container
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/container', {
     templateUrl: 'static/partials/container.html',
-    controller: 'ContainerListCtrl'
+    controller: 'ContainerListController'
   });
 }]);
 

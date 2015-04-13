@@ -1,7 +1,7 @@
 $('.collapse').collapse({toggle:true});
 var containerControllers = angular.module('containerControllers', []);
 
-containerControllers.controller('ContainerListCtrl', ['$scope', '$http', '$timeout', 'Container', function($scope, $http, $timeout, Container) {
+containerControllers.controller('ContainerListController', ['$scope', '$http', '$timeout', 'Container', function($scope, $http, $timeout, Container) {
   $scope.startContainer = function(container) {
     console.log("start container")
     console.log(container);
