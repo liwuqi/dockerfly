@@ -1,12 +1,13 @@
 <div class="container-fluid">
-  <div class="row">
+  <div class="row top-buffer">
     <hr />
-    <div class="col-xs-12">
-      Search: <input class="col-xs-12" ng-model="query">
+    <div class="col-md-12">
+      Search: <input class="col-md-12" ng-model="query">
     </div>
   </div>
 
-  <div class="accordion" id="dockerflyui-accordion">
+  <div class="row top-buffer">
+  <div class="col-md-12 accordion" id="dockerflyui-accordion">
     <div class="accordion-group item" ng-repeat="container in containers | filter:query | orderBy:orderProp">
       <div class="accordion-heading">
         <a data-target="#" ng-model="collapsed" ng-click="changeCollapsed(container)" class="docker-container-item">
@@ -25,6 +26,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
 </div>

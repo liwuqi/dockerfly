@@ -14,3 +14,6 @@
 .btn-status-control {
   float: right;
 }
+
+/* hack bootstrap to add top space bwtween rows */
+.top-buffer {margin-top:20px; }

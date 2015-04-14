@@ -97,28 +97,28 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
                 items: [
                     {
                         type: 'section',
-                        htmlClass: 'col-xs-4',
+                        htmlClass: 'col-md-4',
                         items: [
                             'container_name',
                         ]
                     },
                     {
                         type: 'section',
-                        htmlClass: 'col-xs-4',
+                        htmlClass: 'col-md-4',
                         items: [
                             'run_cmd',
                         ]
                     },
                     {
                         type: 'section',
-                        htmlClass: 'col-xs-4',
+                        htmlClass: 'col-md-4',
                         items: [
                             'desc',
                         ]
                     },
                     {
                         type: 'section',
-                        htmlClass: 'col-xs-12',
+                        htmlClass: 'col-md-12',
                         items: [
                             'image_name',
                         ]
@@ -135,14 +135,14 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
                 items: [
                     {
                         type: 'section',
-                        htmlClass: 'col-xs-12',
+                        htmlClass: 'col-md-12',
                         items: [
                             'gateway',
                         ]
                     },
                     {
                         type: 'section',
-                        htmlClass: 'col-xs-12',
+                        htmlClass: 'col-md-12',
                         items: [
                             'eths',
                         ]
