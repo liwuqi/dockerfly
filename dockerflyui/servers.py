@@ -20,18 +20,30 @@ import os
 import requests
 from flask import render_template
 from docopt import docopt
+import docker as dockerpy
 
-from flask import Flask, json, request
+from flask import Flask, json, request, jsonify
 from flask.ext.restful import reqparse, abort, Api, Resource
 
 dockerflyui_app = Flask(__name__)
 dockerflyui_api = Api(dockerflyui_app)
 
+
 dockerflyd_server = 'http://127.0.0.1:5123'
+docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock')
 
 @dockerflyui_app.route('/')
 def home(name=None):
     return render_template('index.html', name=name)
+
+class ImageList(Resource):
+    def get(self):
+        return jsonify(
+                        {
+                            'images':
+                            [item['RepoTags'][0] for item in docker_cli.images()]
+                        }
+                    )
 
 class ContainerList(Resource):
     def get(self):
@@ -59,6 +71,7 @@ class ContainerInactive(Resource):
     def put(self, container_id):
         return requests.put(dockerflyd_server + '/v1/container/' + container_id + '/inactive').json()
 
+dockerflyui_api.add_resource(ImageList, '/api/images')
 dockerflyui_api.add_resource(ContainerList, '/api/containers')
 dockerflyui_api.add_resource(Container, '/api/container/<string:container_id>')
 dockerflyui_api.add_resource(ContainerActive, '/api/container/<string:container_id>/active')

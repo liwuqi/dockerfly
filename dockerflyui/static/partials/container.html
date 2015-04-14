@@ -1,15 +1,10 @@
 <div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span12">
-      Search: <input ng-model="query">
-      Sort by:
-      <select ng-model="orderProp">
-        <option value="mtime">Newest</option>
-      </select>
+  <div class="row">
+    <hr />
+    <div class="col-xs-12">
+      Search: <input class="col-xs-12" ng-model="query">
     </div>
   </div>
-
-  <hr />
 
   <div class="accordion" id="dockerflyui-accordion">
     <div class="accordion-group item" ng-repeat="container in containers | filter:query | orderBy:orderProp">
