@@ -11,7 +11,7 @@ if py_version < (2, 6):
 elif (3, 0) < py_version < (3, 2):
     raise RuntimeError('On Python 3, dockerfly requires Python 3.2 or later')
 
-requires = ['sh >= 1.09', 'docker-py >= 1.1.0',
+requires = ['pip >= 6.0', 'sh >= 1.09', 'docker-py >= 1.1.0',
             'docopt >= 0.6.1', 'flask >= 0.10.1', 'python-daemon >= 1.5.0',
             'flask-restful >= 0.3.0', 'requests >= 2.5.2']
 
