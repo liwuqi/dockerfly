@@ -91,6 +91,12 @@ this means:
     * you will create a container with two macvlan eths(testDockerflyv0:192.168.159.10/24, testDockerflyv1:192.168.159.11/24), the eths will link to eth0
     * the container's image name is centos:centos6
 
+* set eth0 to promisc
+
+    ```
+    ifconfig eth0 promisc
+    ```
+
 * start this container:
 
     ```
@@ -109,7 +115,7 @@ exec `docker ps`, you can find:
     e3974de54989        172.16.11.13:5000/brain/centos6:latest   "/bin/sleep 300"    2 minutes ago       Up 2 minutes                            dockerfly_centos_centos6_20141207121837
 
 
-* set a simple httpserver by nsenter:
+* set a simple httpserver by nsenter (you can get pid from the output of start cmd):
 
     ```
       nsenter -t 28247 -n python -m SimpleHTTPServer 80
