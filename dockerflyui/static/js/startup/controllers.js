@@ -136,7 +136,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
             },
              {
                key: 'image_name',
-               placeholder: images[0]['value'],
+               placeholder: 'please select your docker image',
              },
             {
                 type: 'help',
@@ -170,11 +170,24 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
 
           $scope.containerModel= {};
 
+          //ok, let's do creat a container
           $scope.onSubmit = function(form) {
             $scope.$broadcast('schemaFormValidate');
 
             if(form.$valid) {
                 console.log("create container");
+
+                //check if ip and eth name is unique
+                var eths = $scope.map($scope.containerModel.eths, function(eth){return eth['eth_name']});
+                var ips = $scope.map($scope.containerModel.eths, function(eth){return eth['ip']});
+                if (DockerflyUI.eliminateDuplicates(eths)) {
+                    alert("you set duplicate eth!");
+                    return;
+                }
+                if (DockerflyUI.eliminateDuplicates(ips)) {
+                    alert("you set duplicate ip!");
+                    return;
+                }
 
                 //normalize post params
                 var post_params = angular.copy($scope.containerModel);
