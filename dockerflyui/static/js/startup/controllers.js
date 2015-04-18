@@ -7,10 +7,22 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
           Date.now = function() { return new Date().getTime(); }
       }
 
-      images = [];
+      images = new Array();
       $http.get('/api/images').success(function(data, status, headers, config) {
-          images = data['images'];
-          console.log(images);
+          for (var i = 0; i < data['images'].length; i++) {
+                images[i] = {
+                                value: data['images'][i],
+                                label: data['images'][i],
+                            };
+          };
+          if (images.length === 0) {
+                images[0] = {value:'no image', label:'no image'} ;
+          }
+
+          $scope.refreshSelect = function(schema, options, search) {
+            console.log('refreshSelect is called');
+            return images;
+          }
 
           $scope.schema = {
             type: 'object',
@@ -45,8 +57,12 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
                   type: 'string',
                   title: 'base image',
                   format: 'uiselect',
-                  enum: images,
-                  default: images[0],
+                  uiClass: 'short_select',
+                  items: images,
+                   options: {
+                     refreshDelay: 100,
+                     callback: $scope.refreshSelect
+                   },
                   description: 'select your base image of container',
               },
               eths: {
@@ -116,15 +132,12 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
                             'desc',
                         ]
                     },
-                    {
-                        type: 'section',
-                        htmlClass: 'col-md-12',
-                        items: [
-                            'image_name',
-                        ]
-                    },
                 ]
             },
+             {
+               key: 'image_name',
+               placeholder: images[0]['value'],
+             },
             {
                 type: 'help',
                 helpvalue: '<div class="alert alert-info">custom your container network</div>'
