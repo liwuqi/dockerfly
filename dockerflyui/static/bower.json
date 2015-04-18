@@ -13,6 +13,7 @@
     "angular-resource": "1.2.x",
     "html5-boilerplate": "~4.3.0",
     "angular-schema-form": "~0.8.0",
-    "ng-prettyjson": "~0.1.6"
+    "ng-prettyjson": "~0.1.6",
+    "angular-strap": "~2.2.1"
   }
 }
