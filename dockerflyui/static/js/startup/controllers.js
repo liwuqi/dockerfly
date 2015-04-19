@@ -167,11 +167,11 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
 
           $scope.containerModel= {};
 
-          //ok, let's do creat a container
           $scope.onSubmit = function(form) {
             $scope.$broadcast('schemaFormValidate');
 
             if(form.$valid) {
+                //ok, let's do creat a container
                 console.log("create container");
 
                 //check if ip and eth name is unique
@@ -239,3 +239,16 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
       });
   }]
 )
+.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
