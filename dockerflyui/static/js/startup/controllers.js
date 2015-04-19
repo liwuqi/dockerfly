@@ -214,7 +214,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                                     title: 'Success',
                                     content: 'You set a new container! <br /> <br />' +
                                              'status:' + status.toString() + '<br />' +
-                                             'info:' + JSON.stringify(data, null, 2),
+                                             'info:' + JSON.stringify(data, null, 2).replace(/\n/g, '<br />'),
                                     show: false, backdrop: false});
                         alertModal.$promise.then(alertModal.show);
 
@@ -224,11 +224,9 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                                     title: 'Error',
                                     content: 'That something was not right here! <br /> <br />' +
                                              'status:' + status.toString() + '<br />' +
-                                             'info:' + JSON.stringify(data, null, 2),
+                                             'info:' + JSON.stringify(data, null, 2).replace(/\n/g, '<br />'),
                                     show: false, backdrop: false});
                         alertModal.$promise.then(alertModal.show);
-
-                        alert("status" + status.toString() + "\n" + JSON.stringify(data, null, 2));
                     });
             } else {
                 var alertModal = $modal({
