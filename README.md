@@ -193,6 +193,6 @@ License (Simplified BSD)
 ========================
 http://choosealicense.com/licenses/bsd-2-clause/
 
-VERSION
+LATEST VERSION
 ========================
 1.1.0
