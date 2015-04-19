@@ -192,3 +192,7 @@ but different people use Docker for different purposes, so  **Don't be afraid, b
 License (Simplified BSD)
 ========================
 http://choosealicense.com/licenses/bsd-2-clause/
+
+VERSION
+========================
+1.1.0
