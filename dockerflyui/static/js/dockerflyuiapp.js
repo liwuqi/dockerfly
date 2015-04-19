@@ -16,19 +16,15 @@ config(['$routeProvider', function($routeProvider) {
 //for custom utils
 var DockerflyUI = DockerflyUI || {};
 
-DockerflyUI.eliminateDuplicates = function(arr) {
-  var i,
-      len=arr.length,
-      out=[],
-      obj={};
-
-  for (i=0;i<len;i++) {
-    obj[arr[i]]=0;
-  }
-  for (i in obj) {
-    out.push(i);
-  }
-  return out;
+DockerflyUI.checkDuplicates = function(arr) {
+    var arr = angular.copy(arr);
+    var sorted_arr = arr.sort();
+    for (var i = 0; i < arr.length - 1; i++) {
+        if (sorted_arr[i + 1] == sorted_arr[i]) {
+            return true;
+        }
+    }
+    return false;
 };
 
 

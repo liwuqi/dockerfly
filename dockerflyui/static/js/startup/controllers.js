@@ -1,8 +1,8 @@
 $('.collapse').collapse({toggle:true});
 var startupControllers = angular.module('startupControllers', []);
 
-startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
-    function($scope, $http, $timeout) {
+startupControllers.controller('FormController', ['$scope', '$http', '$timeout', '$modal',
+    function($scope, $http, $timeout, $modal) {
       if (!Date.now) {
           Date.now = function() { return new Date().getTime(); }
       }
@@ -15,9 +15,6 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
                                 label: data['images'][i],
                             };
           };
-          if (images.length === 0) {
-                images[0] = {value:'no image', label:'no image'} ;
-          }
 
           $scope.refreshSelect = function(schema, options, search) {
             console.log('refreshSelect is called');
@@ -180,38 +177,65 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout',
                 //check if ip and eth name is unique
                 var eths = $scope.map($scope.containerModel.eths, function(eth){return eth['eth_name']});
                 var ips = $scope.map($scope.containerModel.eths, function(eth){return eth['ip']});
-                if (DockerflyUI.eliminateDuplicates(eths)) {
-                    alert("you set duplicate eth!");
+                if (DockerflyUI.checkDuplicates(eths)) {
+                    var alertModal = $modal({
+                                title: 'Error',
+                                content: 'You set duplicate eth!',
+                                show: false, backdrop: false});
+                    alertModal.$promise.then(alertModal.show);
                     return;
                 }
-                if (DockerflyUI.eliminateDuplicates(ips)) {
-                    alert("you set duplicate ip!");
+                if (DockerflyUI.checkDuplicates(ips)) {
+                    var alertModal = $modal({
+                                title: 'Error',
+                                content: 'You set duplicate IP!',
+                                show: false, backdrop: false});
+                    alertModal.$promise.then(alertModal.show);
                     return;
                 }
 
                 //normalize post params
-                var post_params = angular.copy($scope.containerModel);
-                post_params.eths = new Array();
+                var postParams = angular.copy($scope.containerModel);
+                postParams.eths = new Array();
                 for (i=0; i<$scope.containerModel.eths.length; i++) {
-                        post_params.eths[i] = new Array();
-                        post_params.eths[i][0] = $scope.containerModel.eths[i]['eth_name'];
-                        post_params.eths[i][1] = $scope.containerModel.eths[i]['attach_to'];
-                        post_params.eths[i][2] = $scope.containerModel.eths[i]['ip'];
+                        postParams.eths[i] = new Array();
+                        postParams.eths[i][0] = $scope.containerModel.eths[i]['eth_name'];
+                        postParams.eths[i][1] = $scope.containerModel.eths[i]['attach_to'];
+                        postParams.eths[i][2] = $scope.containerModel.eths[i]['ip'];
                 }
 
-                post_params['status'] = 'running';
-                console.log(post_params);
-                var post_params_wrapper = new Array(post_params);
+                postParams['status'] = 'running';
+                console.log(postParams);
+                var postParamsWrapper = new Array(postParams);
 
-                $http.post('/api/containers', data=post_params_wrapper)
+                $http.post('/api/containers', data=postParamsWrapper)
                     .success(function(data, status, headers, config){
-                        alert("status:" + status.toString() + "\n" + JSON.stringify(data, null, 2));
+                        var alertModal = $modal({
+                                    title: 'Success',
+                                    content: 'You set a new container! <br /> <br />' +
+                                             'status:' + status.toString() + '<br />' +
+                                             'info:' + JSON.stringify(data, null, 2),
+                                    show: false, backdrop: false});
+                        alertModal.$promise.then(alertModal.show);
+
                     })
                     .error(function(data, status, headers, config){
+                        var alertModal = $modal({
+                                    title: 'Error',
+                                    content: 'That something was not right here! <br /> <br />' +
+                                             'status:' + status.toString() + '<br />' +
+                                             'info:' + JSON.stringify(data, null, 2),
+                                    show: false, backdrop: false});
+                        alertModal.$promise.then(alertModal.show);
+
                         alert("status" + status.toString() + "\n" + JSON.stringify(data, null, 2));
                     });
             } else {
-                alert('invalid params, please check your input');
+                var alertModal = $modal({
+                            title: 'Error',
+                            content: 'Invalid params, please check your input!',
+                            show: false, backdrop: false});
+                alertModal.$promise.then(alertModal.show);
             }
           };
       });
