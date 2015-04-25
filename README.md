@@ -1,197 +1,235 @@
-What is `dockerfly`:
-========================
-
-dockerfly is a small Docker tool to help you to create container with independent macvlan Eths easily.
-
-use dokerfly, you can:
-
-* create a container with one or more macvlan eths by json config file easily,and set independent ip for each veth
-
-* exec command within contianer by nsenter easily
-
-* create a container with sshd service ,then you can visit the container as the same as a normal virtual machine
-
+dockerfly，让你的容器更真实，更方便
+=====================================
+dockerfly是为了让你的container运行起来"更像"一台真正的虚拟机，对网络部分做点包装的小工具。
 
 How to Work:
 ========================
 
+##缘起
+
+docker推荐一个container内只运行一个进程，网络部分同docker主机共享。使用supervisor管理多进程。
+
+在很多真实场景下，这种方法局限性很大。
+
+例如，我有一个项目A，里面已经采用了supervisor管理多个进程，另外带有web，我希望能有docker快速建立一个Container，用于平时的测试和开发。
+
+这样你的选择只能是:
+
+* 建立的container采用端口映射的办法，把80端口映射到docker主机
+
+* 把进程放到supervisor里面，每次run container的时候启动
+
+* 操作需要用 docker run -it xxxx /bin/bash 进行
+
+这样的局限很明显的:
+
+* 这台container没有自己的对外IP，很多TestCase跑起来会很复杂
+
+* 我无法同时启动多个占用80端口的container
+
+* 我用bash登陆进去后，这个container不能停，不然再次进入container会很麻烦
+
+* 我自己进程管理的supervisor和docker用的supervisor会混在一起，不干净
+
+## 解决办法
+
+在container中开启sshd，把它想象成一台真正的虚拟机。
+
+## 警告
+
+已经有很多人警告过这种方法是不可取的，因为docker诞生之初并不是为了构建一个Vmware类的虚拟机来设计的。
+这样做会有安全性上的问题，dockerfly在实现的时候没有过多考虑安全问题，它只是假设你在一台完全由你控制的机器上，方便的搭建开发测试环境。
+
+## 怎样工作
+
+dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网络功能。
+
+#### 我有一台物理机或是Vmware虚拟机-PhysicalHostA，有两块网卡:
+
+* eth0: 192.168.1.10/24, gateway:192.168.1.1
+* eth1: 192.168.1.11/24, gateway:192.168.1.1
+
+    eth0和eth1同在192.168.1网段，是互通的
+
+        +---------+
+        | Physical|
+        \ HostA   /
+        |\       /|
+        | ------  |
+        | eth0    |
+        | eth1    |
+        +---------+
+
+#### 首先启动一台docker container
+
+    docker run -i -t xxx /bin/bash
+
+#### 在物理机中创建一个Macvlan网卡Attach到eth1上
+
+    ip link add MacVlanEthA link eth1 type macvlan mode bridge
+
+#### 得到docker container的pid，用ip link命令把虚拟网卡映射到docker的network namespace中
+
+    ip link set netns $(docker container pid) MacVlanEthA
+
+* docker的pid可以用dockerfly提供的脚本获取
+
+    ```
+    python dockerfly/bin/dockerflyctl.py getpid <container_id>
+    ```
+
+#### 为MacVlanEthA设置IP，路由
+
+    nsenter -t $(docker container pid) -n ip route del default
+    nsenter -t $(docker container pid) -n ip addr add 192.168.1.100 dev MacVlanEthA
+    nsenter -t $(docker container pid) -n ip route add default via 192.168.159.1 dev MacVlanEthA
+
+* 这里借助了nsenter这个工具，它帮助我们在container中执行命令，如果是`>=docker1.4`的版本，也可以用docker exec来替代
+  nsenter的介绍可以参照这里:
+  https://github.com/jpetazzo/nsenter
+
+#### 在docker的容器内执行:
+
+    ifconfig
+
+可以看到MacVlanEthA的ip被设置为192.168.1.100
+
+#### 设置物理机eth1为混杂模式
+
+    ifconfig eth1 promisc
+
+#### 在物理机执行:
+
+    [PhysicalHostA@localhost]~# ping 192.168.1.100
+    PING 192.168.159.1 (192.168.1.100) 56(84) bytes of data.
+    64 bytes from 192.168.1.100: icmp_seq=1 ttl=128 time=0.663 ms
+    64 bytes from 192.168.1.100: icmp_seq=2 ttl=128 time=0.180 ms
+    ...
+
+
+#### 用类似的方法添加新的容器及网卡，此时的网络组成如下图:
+
                                                            +-----------------------------------------------+---------------+
-    +---------+                  *******                   |                    Physical hostDocker                        |
+    +---------+                  *******                   |                    Physical host Docker                        |
     | Physical|                **       **                 |   +---------+           +---------+           +---------+     |
     \ hostA   /              **  Local    **               |   | Docker  |           | Docker  |           | Docker  |     |
     |\       /|  --------->  *   NetWork   *  <----------- |   \ hostA   /           \ hostB   /           \ hostC   /     |
     | ------  |              **           **               |   |\       /|           |\       /|           |\       /|     |
-    |         |                **       **                 |   | ------  |           | ------  |           | ------  |     |
+    |eth0,eth1|                **       **                 |   | ------  |           | ------  |           | ------  |     |
     +---------+                  *******                   |   | MacVlan |           | MacVLan |           |...EthC1 |     |
-    192.168.1.2                                            |   | EthA    |           | EthB    |           |   EthC2 |     |
+                                                           |   | EthA    |           | EthB    |           |   EthC2 |     |
                                                            |   +---------+           +---------+           +---------+     |
-                                                           |  192.168.1.10           192.168.1.11          192.168.1.12    |
-                                                           |                                               192.168.1.13    |
+                                                           |  192.168.1.100         192.168.1.101          192.168.1.102   |
+                                                           |                                               192.168.1.103   |
                                                            +-----------------------------------------------+---------------+
 
-```
-[PhysicalHostA@localhost]~# ping 192.168.1.10
-PING 192.168.159.2 (192.168.1.10) 56(84) bytes of data.
-64 bytes from 192.168.1.10: icmp_seq=1 ttl=128 time=0.663 ms
-64 bytes from 192.168.1.10: icmp_seq=2 ttl=128 time=0.180 ms
-...
-```
+#### 如果你的container内开启sshd服务的话，此时可以直接把这些contaier当作VMWare的虚拟机来用了。
+
+* 如何在镜像内开启sshd，可以参考:
+
+    https://github.com/tutumcloud/tutum-centos
+    https://github.com/tutumcloud/tutum-ubuntu
+
+* 如果你只是想简单试用一下的话，我做了一个基础镜像，默认用户名/密码是:root/rootroot，放在
+    https://registry.hub.docker.com/u/memorybox/centos6_sshd/
+
+  可以执行下面命令获取:
+  ```
+  docker pull memorybox/centos6_sshd
+  ```
+
+#### dockerfly就是将上面这些操作做了一个简单封装，供你轻松地1秒钟启动一台类似Vmware虚拟机。
 
 Install:
 ========================
 
-* Linux and Docker. I have tested with Docker versions 1.1.0 through 1.3.1, but other versions should work too. Linux kernels after 3.5 are known to work; the newer the better.
+* 推荐linux内核3.18以上，推荐开启docker overlay文件系统。`docker>=1.4`
 
-* [nsenter](https://github.com/jpetazzo/nsenter):
+* 安装nsenter
 
     ```
     docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
     ```
 
-*  dockerfly:
-
-    ```
-    git clone https://github.com/memoryboxes/dockerfly.git && python dockerfly/setup.py install
-    ```
-
-How to use:
-========================
-
-* generate a sample config json:
-
-    ```
-    dockerflyctl gen centos6.json
-    ```
-
-you'll get a sample config, cenos6.json:
-
-    ```
-    [
-        {
-            "gateway": "192.168.159.2",
-            "eths": [
-                [
-                    "testDockerflyv0",
-                    "eth0",
-                    "192.168.159.10/24"
-                ],
-                [
-                    "testDockerflyv1",
-                    "eth0",
-                    "192.168.159.11/24"
-                ]
-            ],
-            "image_name": "centos:centos6",
-            "run_cmd": "/bin/sleep 300"
-        }
-    ]
-    ```
-
-this means:
-    * you will create a container with two macvlan eths(testDockerflyv0:192.168.159.10/24, testDockerflyv1:192.168.159.11/24), the eths will link to eth0
-    * the container's image name is centos:centos6
-
-* set eth0 to promisc
-
-    ```
-    ifconfig eth0 promisc
-    ```
-
-* start this container:
-
-    ```
-     dockerflyctl run centos6.json
-    ```
-
-output:
-
-    ```
-    Container running:ContainerId(e3974de549891f15e448c4cb0b1b36706b7a233e0d79073a3f4677b3586a4dcb) Pid(28437)
-    ```
-
-exec `docker ps`, you can find:
-
-    CONTAINER ID        IMAGE                                    COMMAND             CREATED             STATUS              PORTS               NAMES
-    e3974de54989        172.16.11.13:5000/brain/centos6:latest   "/bin/sleep 300"    2 minutes ago       Up 2 minutes                            dockerfly_centos_centos6_20141207121837
-
-
-* set a simple httpserver by nsenter (you can get pid from the output of start cmd):
-
-    ```
-      nsenter -t 28247 -n python -m SimpleHTTPServer 80
-    ```
-
-now you can visit `http://192.168.159.10` in Physical HostA.
-
-Web shell:
-========================
-want a web shell?  Sure, just one step:
-
-
-* start dockerflyd and dockerflyui service
-
-    ```
-        ./run.sh
-    ```
-
-then you can visit `http://host:80` to create/remove your container
-
-Best Practice:
-========================
-
-dockerfly help you to create containers which shared local network by physical hosts, so the easiest way to use dockerfly is to create a container with sshd service.Then you can visit the container as the same as normal virtual machine.
-
-steps:
-
-* pull a sshd image
+*  pull一个实验镜像下来
 
     ```
     docker pull memorybox/centos6_sshd
     ```
 
-this is a clean image with sshd service and the default user/password is `root:rootroot`, [more info](https://registry.hub.docker.com/u/memorybox/centos6_sshd/)
-
-* start the container by dockerfly:
-
-    * create a config file: `dockerflyctl gen centos6_sshd.json`, modify to:
+*  安装dockerfly
 
     ```
-    [
-        {
-            "gateway": "192.168.159.2",
-            "eths": [
-                [
-                    "testDockerflyv0",
-                    "eth0",
-                    "192.168.159.10/24"
-                ],
-                [
-                    "testDockerflyv1",
-                    "eth0",
-                    "192.168.159.11/24"
-                ]
-            ],
-            "image_name": "docker.cn/memorybox/centos6_sshd",
-            "run_cmd": "/usr/bin/svscan /etc/dockerservices"
-        }
-    ]
+    git clone https://github.com/memoryboxes/dockerfly.git && pip install -r dockerfly/requirements.txt
+    cd dockerfly/dockerflyui && ./run.sh
     ```
 
-    * start container: `dockerflyctl run centos6_sshd.json`
+* 将需要Attach的物理网卡(如eth1)设置为混杂模式
 
-* now you can exec `ssh 192.168.159.10` to connect container in PhysicalHostA.
+    ```
+    ifconfig eth1 promisc
+    ```
+
+* 访问`http://host:80` ，会有一个很简单的web页面，供你创建/删除、启动/停止你的container
+  创建一台container后，你可以直接ssh登陆，在上面像VMware虚拟机一样操作。tcpdump一下，你可以看到网络数据包和真正的网卡流量是一致的。
 
 Caveats
 ========================
-Enable sshd service in docker is unsafe, see here:
 
-http://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
+再次警示一下，这样做并不是docker的推荐做法。问题如下:
 
-but different people use Docker for different purposes, so  **Don't be afraid, but be careful.**
+* 多个虚拟网卡绑定到一个混杂模式的物理网卡上，会有网络性能问题
+
+* 在container中开启sshd服务，无法保证安装性
+
+* 用户以root身份在container中操作，容易导致container挂掉
+
+如果你不Care这些问题，你会感觉使用dockerfly创建的container，感觉和Vmware虚拟机是一样的，而且你获得了近似于物理机的性能，以及秒级别的创建/删除container的能力。
+
+####
+Different people use Docker for different purposes, so  **Don't be afraid, but be careful.**
+
+Best Practice:
+========================
+
+我目前在两个场景使用dockerfly:
+
+## 每日构建
+
+传统的每日构建一般只会build出二进制包，利用docker，可以每天构建一个带有执行环境的container，这样开发和测试都可以从dockerfly中轻松启用一台即时构建的container，提升开发测试效率。
+
+## 回归测试
+
+* 一般回归测试为了保证执行环境的统一，都要在setUp和tearDown中写许多环境相关的代码。
+
+* dockerfly提供了简单的Restful API接口，可以创建/删除/启动/停止/执行命令/拷贝文件等，这样终于可以走进`创建一台机器->跑一个测试`的时代了，而且启动/删除container的动作在秒钟级别，效率很高。环境无疑是最干净的。
 
 License (Simplified BSD)
 ========================
 http://choosealicense.com/licenses/bsd-2-clause/
+
+ireference
+========================
+* Linux 上的基础网络设备详解
+http://www.ibm.com/developerworks/cn/linux/1310_xiawc_networkdevice/index.html
+
+* Linux 上虚拟网络与真实网络的映射
+http://www.ibm.com/developerworks/cn/linux/1312_xiawc_linuxvirtnet/index.html
+
+* 网络虚拟化技术: TUN/TAP MACVLAN MACVTAP
+https://blog.kghost.info/2013/03/27/linux-network-tun/
+
+* Coupling Docker and Open vSwitch
+http://fbevmware.blogspot.com/2013/12/coupling-docker-and-open-vswitch.html
+
+* four ways to connect a docker
+http://blog.oddbit.com/2014/08/11/four-ways-to-connect-a-docker/
+
+* Docker containers should not run an SSH server
+https://news.ycombinator.com/item?id=7950326
+
+* Proposal: Native Docker Multi-Host Networking
+https://github.com/docker/docker/issues/8951
 
 LATEST VERSION
 ========================

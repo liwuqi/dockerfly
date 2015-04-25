@@ -56,7 +56,7 @@ class MacvlanEth(VEth):
     if macvlan_eth is default route, then do:
 
         nsenter -t $(docker container pid) -n ip route del default
-        nsenter -t $(docker container pid) -n ip addr add 192.168.1.10
+        nsenter -t $(docker container pid) -n ip addr add 192.168.1.10 dev em0v0
         nsenter -t $(docker container pid) -n ip route add default via 192.168.159.2 dev em0v0
     """
 

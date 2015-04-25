@@ -66,7 +66,7 @@ class Container(object):
         """start eths and continer"""
         try:
             cls.docker_cli.start(container=container_id,
-                                 extra_hosts={'ldap.netis.com.cn':'172.16.11.3'},
+                                 #extra_hosts={'ldap.netis.com.cn':'172.16.11.3'},
                                  privileged=True)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
