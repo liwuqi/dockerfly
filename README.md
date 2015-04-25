@@ -40,6 +40,39 @@ docker推荐一个container内只运行一个进程，网络部分同docker主�
 已经有很多人警告过这种方法是不可取的，因为docker诞生之初并不是为了构建一个Vmware类的虚拟机来设计的。
 这样做会有安全性上的问题，dockerfly在实现的时候没有过多考虑安全问题，它只是假设你在一台完全由你控制的机器上，方便的搭建开发测试环境。
 
+Install:
+========================
+
+* 推荐linux内核3.18以上，推荐开启docker overlay文件系统。`docker>=1.4`
+
+* 安装nsenter
+
+    ```
+    docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
+    ```
+
+*  pull一个实验镜像下来
+
+    ```
+    docker pull memorybox/centos6_sshd
+    ```
+
+*  安装dockerfly
+
+    ```
+    git clone https://github.com/memoryboxes/dockerfly.git && pip install -r dockerfly/requirements.txt
+    cd dockerfly/dockerflyui && ./run.sh
+    ```
+
+* 将需要Attach的物理网卡(如eth1)设置为混杂模式
+
+    ```
+    ifconfig eth1 promisc
+    ```
+
+* 访问`http://host:80` ，会有一个很简单的web页面，供你创建/删除、启动/停止你的container
+  创建一台container后，你可以直接ssh登陆，在上面像VMware虚拟机一样操作。tcpdump一下，你可以看到网络数据包和真正的网卡流量是一致的。
+
 ## 怎样工作
 
 dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网络功能。
@@ -139,39 +172,6 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
   ```
 
 #### dockerfly就是将上面这些操作做了一个简单封装，供你轻松地1秒钟启动一台类似Vmware虚拟机。
-
-Install:
-========================
-
-* 推荐linux内核3.18以上，推荐开启docker overlay文件系统。`docker>=1.4`
-
-* 安装nsenter
-
-    ```
-    docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
-    ```
-
-*  pull一个实验镜像下来
-
-    ```
-    docker pull memorybox/centos6_sshd
-    ```
-
-*  安装dockerfly
-
-    ```
-    git clone https://github.com/memoryboxes/dockerfly.git && pip install -r dockerfly/requirements.txt
-    cd dockerfly/dockerflyui && ./run.sh
-    ```
-
-* 将需要Attach的物理网卡(如eth1)设置为混杂模式
-
-    ```
-    ifconfig eth1 promisc
-    ```
-
-* 访问`http://host:80` ，会有一个很简单的web页面，供你创建/删除、启动/停止你的container
-  创建一台container后，你可以直接ssh登陆，在上面像VMware虚拟机一样操作。tcpdump一下，你可以看到网络数据包和真正的网卡流量是一致的。
 
 Caveats
 ========================
