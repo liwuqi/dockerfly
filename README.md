@@ -71,7 +71,10 @@ Install:
     ```
 
 * 访问`http://host:80` ，会有一个很简单的web页面，供你创建/删除、启动/停止你的container
-  创建一台container后，你可以直接ssh登陆，在上面像VMware虚拟机一样操作。tcpdump一下，你可以看到网络数据包和真正的网卡流量是一致的。
+
+  创建一台container后，你可以直接ssh登陆，在上面像VMware虚拟机一样操作。
+
+  tcpdump一下，你可以看到网络数据包和真正的网卡流量是一致的。
 
 ## 怎样工作
 
