@@ -198,7 +198,7 @@ Different people use Docker for different purposes, so  **Don't be afraid, but b
 Best Practice:
 ========================
 
-我目前在两个场景使用dockerfly:
+dockerfly比较适合下面几个场景:
 
 ## 每日构建
 
@@ -209,6 +209,10 @@ Best Practice:
 * 一般回归测试为了保证执行环境的统一，都要在setUp和tearDown中写许多环境相关的代码。
 
 * dockerfly提供了简单的Restful API接口，可以创建/删除/启动/停止/执行命令/拷贝文件等，这样终于可以走进`创建一台机器->跑一个测试`的时代了，而且启动/删除container的动作在秒钟级别，效率很高。环境无疑是最干净的。
+
+## 临时项目开发
+
+像多个python项目环境的隔离，一直用virtualenv之类的工具，用container来隔离会更干净，同时可以将一台机器划分成多个项目的contaienr，每台container划分一个 IP，服务各行其道，互不干扰。
 
 Reference
 ========================
