@@ -5,7 +5,7 @@ dockerfly是为了让你的container运行起来"更像"一台真正的虚拟机
 How to Work:
 ========================
 
-##缘起
+## 缘起
 
 docker推荐一个container内只运行一个进程，网络部分同docker主机共享。使用supervisor管理多进程。
 
@@ -208,7 +208,7 @@ License (Simplified BSD)
 ========================
 http://choosealicense.com/licenses/bsd-2-clause/
 
-ireference
+Reference
 ========================
 * Linux 上的基础网络设备详解
 http://www.ibm.com/developerworks/cn/linux/1310_xiawc_networkdevice/index.html
