@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BASE_PATH=$(cd "$(dirname "$0")"; pwd)
 LOG_FILE=$BASE_PATH/web.log
 PID_FILE=$BASE_PATH/web.pid
