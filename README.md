@@ -210,10 +210,6 @@ Best Practice:
 
 * dockerfly提供了简单的Restful API接口，可以创建/删除/启动/停止/执行命令/拷贝文件等，这样终于可以走进`创建一台机器->跑一个测试`的时代了，而且启动/删除container的动作在秒钟级别，效率很高。环境无疑是最干净的。
 
-License (Simplified BSD)
-========================
-http://choosealicense.com/licenses/bsd-2-clause/
-
 Reference
 ========================
 * Linux 上的基础网络设备详解
@@ -244,6 +240,11 @@ https://news.ycombinator.com/item?id=7950326
 
 https://github.com/docker/docker/issues/8951
 
+License (Simplified BSD)
+========================
+http://choosealicense.com/licenses/bsd-2-clause/
+
 LATEST VERSION
 ========================
 1.1.0
+
