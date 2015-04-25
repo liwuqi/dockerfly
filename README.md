@@ -185,6 +185,8 @@ Caveats
 
 * 用户以root身份在container中操作，容易导致container挂掉
 
+* 最后，这些功能其实用Vagrant等工具也可以实现的，只不过是学习成本的大小而已
+
 如果你不Care这些问题，你会感觉使用dockerfly创建的container，感觉和Vmware虚拟机是一样的，而且你获得了近似于物理机的性能，以及秒级别的创建/删除container的能力。
 
 ####
