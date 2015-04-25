@@ -161,6 +161,7 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
 * 如何在镜像内开启sshd，可以参考:
 
     https://github.com/tutumcloud/tutum-centos
+
     https://github.com/tutumcloud/tutum-ubuntu
 
 * 如果你只是想简单试用一下的话，我做了一个基础镜像，默认用户名/密码是:root/rootroot，放在
