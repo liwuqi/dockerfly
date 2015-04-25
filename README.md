@@ -61,7 +61,7 @@ Install:
 
     ```
     git clone https://github.com/memoryboxes/dockerfly.git && pip install -r dockerfly/requirements.txt
-    cd dockerfly/dockerflyui && ./run.sh
+    cd dockerfly && ./run.sh
     ```
 
 * 将需要Attach的物理网卡(如eth1)设置为混杂模式
@@ -212,24 +212,31 @@ http://choosealicense.com/licenses/bsd-2-clause/
 Reference
 ========================
 * Linux 上的基础网络设备详解
+
 http://www.ibm.com/developerworks/cn/linux/1310_xiawc_networkdevice/index.html
 
 * Linux 上虚拟网络与真实网络的映射
+
 http://www.ibm.com/developerworks/cn/linux/1312_xiawc_linuxvirtnet/index.html
 
 * 网络虚拟化技术: TUN/TAP MACVLAN MACVTAP
+
 https://blog.kghost.info/2013/03/27/linux-network-tun/
 
 * Coupling Docker and Open vSwitch
+
 http://fbevmware.blogspot.com/2013/12/coupling-docker-and-open-vswitch.html
 
 * four ways to connect a docker
+
 http://blog.oddbit.com/2014/08/11/four-ways-to-connect-a-docker/
 
 * Docker containers should not run an SSH server
+
 https://news.ycombinator.com/item?id=7950326
 
 * Proposal: Native Docker Multi-Host Networking
+
 https://github.com/docker/docker/issues/8951
 
 LATEST VERSION
