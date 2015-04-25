@@ -212,7 +212,9 @@ dockerfly比较适合下面几个场景:
 
 ## 临时项目开发
 
-像多个python项目环境的隔离，一直用virtualenv之类的工具，用container来隔离会更干净，同时可以将一台机器划分成多个项目的contaienr，每台container划分一个 IP，服务各行其道，互不干扰。
+像多个python项目环境的隔离，一直用virtualenv之类的工具，用container来隔离会更干净，同时可以将一台机器划分成多个项目的containers，每台container分配一个IP，服务各行其道，互不干扰。
+
+dockerfly可以为你搭建穷人版的vSphere (^_^)。
 
 Reference
 ========================
