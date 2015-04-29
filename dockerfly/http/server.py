@@ -179,4 +179,4 @@ def run_server(host, port, debug=False):
     dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
 
 if __name__ == '__main__':
-    run_server(host='0.0.0.0', port=5123, debug=True)
+    run_server(host='0.0.0.0', port=5123, debug=False)
