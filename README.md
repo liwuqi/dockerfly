@@ -188,16 +188,15 @@ Caveats
 
 * 多个虚拟网卡绑定到一个混杂模式的物理网卡上，会有网络性能问题
 
-* 在container中开启sshd服务，无法保证安装性
+* 在container中开启sshd服务，无法保证安全性
 
-* 用户以root身份在container中操作，容易导致container挂掉
+* 用户以root身份在container中操作，容易导致所有container挂掉
 
 * 最后，这些功能其实用Vagrant等工具也可以实现的，只不过是学习成本的大小而已
 
 如果你不Care这些问题，你会感觉使用dockerfly创建的container，感觉和Vmware虚拟机是一样的，而且你获得了近似于物理机的性能，以及秒级别的创建/删除container的能力。
 
-####
-Different people use Docker for different purposes, so  **Don't be afraid, but be careful.**
+#### Different people use Docker for different purposes, so  **Don't be afraid, but be careful.**
 
 Best Practice:
 ========================
@@ -222,6 +221,7 @@ dockerfly可以为你搭建穷人版的vSphere (^_^)。
 
 Reference
 ========================
+
 * Linux 上的基础网络设备详解
 
 http://www.ibm.com/developerworks/cn/linux/1310_xiawc_networkdevice/index.html
