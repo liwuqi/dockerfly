@@ -34,6 +34,10 @@ docker推荐一个container内只运行一个进程，网络部分同docker主�
 
 在container中开启sshd，把它想象成一台真正的虚拟机。
 
+baseimage-docker也做了一些类似的工作，但是dockerfly将基本镜像，container创建等操作结合起来，更为方便。
+
+http://phusion.github.io/baseimage-docker/
+
 ## 警告
 
 已经有很多人警告过这种方法是不可取的，因为docker诞生之初并不是为了构建一个Vmware类的虚拟机来设计的。
