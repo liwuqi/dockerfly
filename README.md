@@ -189,7 +189,7 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
   docker pull memorybox/centos6_sshd
   ```
 
-** dockerfly就是将上面这些操作做了一个简单封装，供你轻松地1秒钟启动一台类似Vmware虚拟机。**
+**dockerfly就是将上面这些操作做了一个简单封装，供你轻松地1秒钟启动一台类似Vmware虚拟机。**
 
 Caveats
 ========================
@@ -206,7 +206,7 @@ Caveats
 
 如果你不Care这些问题，你会感觉使用dockerfly创建的container，感觉和Vmware虚拟机是一样的，而且你获得了近似于物理机的性能，以及秒级别的创建/删除container的能力。
 
-** Different people use Docker for different purposes, so Don't be afraid, but be careful. **
+**Different people use Docker for different purposes, so Don't be afraid, but be careful.**
 
 Best Practice:
 ========================
