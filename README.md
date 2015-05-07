@@ -36,9 +36,8 @@ docker推荐一个container内只运行一个进程，网络部分同docker主�
 
 在container中开启sshd，把它想象成一台真正的虚拟机。
 
-baseimage-docker也做了一些类似的工作，但是dockerfly将基本镜像，container创建等操作结合起来，更为方便。
+[baseimage-docker](http://phusion.github.io/baseimage-docker/)也做了一些类似的工作，但是dockerfly将基本镜像，container创建等操作结合起来，更为方便。
 
-http://phusion.github.io/baseimage-docker/
 
 警告
 --------
@@ -76,10 +75,8 @@ http://phusion.github.io/baseimage-docker/
     ifconfig eth1 promisc
     ```
 
-* 访问`http://host:80` ，会有一个很简单的web页面，供你创建/删除、启动/停止你的container
-
+* 访问`http://host:80` ，会有一个很简单的web页面，供你创建/删除、启动/停止你的container。
   创建一台container后，你可以直接ssh登陆，在上面像VMware虚拟机一样操作。
-
   tcpdump一下，你可以看到网络数据包和真正的网卡流量是一致的。
 
 怎样工作:
@@ -90,6 +87,7 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
 * 我有一台物理机或是Vmware虚拟机-PhysicalHostA，有两块网卡:
 
     eth0: 192.168.1.10/24, gateway:192.168.1.1
+
     eth1: 192.168.1.11/24, gateway:192.168.1.1
 
     eth0和eth1同在192.168.1网段，是互通的
@@ -121,22 +119,21 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
     ip link set netns $(docker container pid) MacVlanEthA
     ```
 
-> docker的pid可以用dockerfly提供的脚本获取
+>> docker的pid可以用dockerfly提供的脚本获取
 
-    ```
-    python dockerfly/bin/dockerflyctl.py getpid <container_id>
-    ```
+>> ```
+>> python dockerfly/bin/dockerflyctl.py getpid <container_id>
+>> ```
 
 * 为MacVlanEthA设置IP，路由
 
+    ```
     nsenter -t $(docker container pid) -n ip route del default
     nsenter -t $(docker container pid) -n ip addr add 192.168.1.100 dev MacVlanEthA
     nsenter -t $(docker container pid) -n ip route add default via 192.168.159.1 dev MacVlanEthA
+    ```
 
-> 这里借助了nsenter这个工具，它帮助我们在container中执行命令，如果是`>=docker1.4`的版本，也可以用docker exec来替代
-> nsenter的介绍可以参照这里:
-
-> https://github.com/jpetazzo/nsenter
+>> 这里借助了[nsenter](https://github.com/jpetazzo/nsenter)这个工具，它帮助我们在container中执行命令，如果是`>=docker1.4`的版本，也可以用docker exec来替代
 
 * 在docker的容器内执行:
 
@@ -165,27 +162,28 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
 
 * 用类似的方法添加新的容器及网卡，此时的网络组成如下图:
 
-                                                           +-----------------------------------------------+---------------+
-    +---------+                  *******                   |                    Physical host Docker                        |
-    | Physical|                **       **                 |   +---------+           +---------+           +---------+     |
-    \ hostA   /              **  Local    **               |   | Docker  |           | Docker  |           | Docker  |     |
-    |\       /|  --------->  *   NetWork   *  <----------- |   \ hostA   /           \ hostB   /           \ hostC   /     |
-    | ------  |              **           **               |   |\       /|           |\       /|           |\       /|     |
-    |eth0,eth1|                **       **                 |   | ------  |           | ------  |           | ------  |     |
-    +---------+                  *******                   |   | MacVlan |           | MacVLan |           |...EthC1 |     |
-                                                           |   | EthA    |           | EthB    |           |   EthC2 |     |
-                                                           |   +---------+           +---------+           +---------+     |
-                                                           |  192.168.1.100         192.168.1.101          192.168.1.102   |
-                                                           |                                               192.168.1.103   |
-                                                           +-----------------------------------------------+---------------+
+
+                                                               +-----------------------------------------------+---------------+
+        +---------+                  *******                   |                    Physical host Docker                        |
+        | Physical|                **       **                 |   +---------+           +---------+           +---------+     |
+        \ hostA   /              **  Local    **               |   | Docker  |           | Docker  |           | Docker  |     |
+        |\       /|  --------->  *   NetWork   *  <----------- |   \ hostA   /           \ hostB   /           \ hostC   /     |
+        | ------  |              **           **               |   |\       /|           |\       /|           |\       /|     |
+        |eth0,eth1|                **       **                 |   | ------  |           | ------  |           | ------  |     |
+        +---------+                  *******                   |   | MacVlan |           | MacVLan |           |...EthC1 |     |
+                                                               |   | EthA    |           | EthB    |           |   EthC2 |     |
+                                                               |   +---------+           +---------+           +---------+     |
+                                                               |  192.168.1.100         192.168.1.101          192.168.1.102   |
+                                                               |                                               192.168.1.103   |
+                                                               +-----------------------------------------------+---------------+
 
 * 如果你的container内开启sshd服务的话，此时可以直接把这些container当作VMWare的虚拟机来用了。
 
-> 如何在镜像内开启sshd，可以参考:
+>> 如何在镜像内开启sshd，可以参考:
 
->   https://github.com/tutumcloud/tutum-centos
+>> https://github.com/tutumcloud/tutum-centos
 
->   https://github.com/tutumcloud/tutum-ubuntu
+>> https://github.com/tutumcloud/tutum-ubuntu
 
 * 如果你只是想简单试用一下的话，我做了一个基础镜像，默认用户名/密码是:root/rootroot，放在
 
