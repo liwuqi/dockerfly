@@ -129,7 +129,7 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
 
 >> 这里借助了[nsenter](https://github.com/jpetazzo/nsenter)这个工具，它帮助我们在container中执行命令，如果是`>=docker1.4`的版本，也可以用docker exec来替代
 
-* 在docker的容器内执行:
+* 在docker container xxx内执行:
 
     ```
     ifconfig
