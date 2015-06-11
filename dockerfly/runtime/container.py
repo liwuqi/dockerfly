@@ -34,7 +34,7 @@ def verify_eths(eth_name, eth_ip):
 
     if eth_name in all_eth_names:
         raise VEthStatusException("eth name has already existed")
-    if eth_ip in all_eth_ips:
+    if eth_ip in all_eth_ips and '0.0.0.0' not in eth_ip:
         raise VEthStatusException("eth ip has already existed")
 
 def update_status(containers):
