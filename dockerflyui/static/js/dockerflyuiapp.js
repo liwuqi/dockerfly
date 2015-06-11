@@ -20,7 +20,7 @@ DockerflyUI.checkDuplicates = function(arr) {
     var arr = angular.copy(arr);
     var sorted_arr = arr.sort();
     for (var i = 0; i < arr.length - 1; i++) {
-        if (sorted_arr[i + 1] == sorted_arr[i]) {
+        if ((sorted_arr[i + 1] == sorted_arr[i]) && (sorted_arr[i].indexOf('0.0.0.0') < 0 )) {
             return true;
         }
     }

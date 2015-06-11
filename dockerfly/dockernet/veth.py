@@ -58,6 +58,8 @@ class MacvlanEth(VEth):
         nsenter -t $(docker container pid) -n ip route del default
         nsenter -t $(docker container pid) -n ip addr add 192.168.1.10 dev em0v0
         nsenter -t $(docker container pid) -n ip route add default via 192.168.159.2 dev em0v0
+
+    if ip='0.0.0.0/0', don't set ip address
     """
 
     def __init__(self, name, ip, link_to):
@@ -113,8 +115,11 @@ class MacvlanEth(VEth):
             ip('link', 'set', 'netns', self._attach_to_container_pid, self._veth_name)
             nsenter('-t', self._attach_to_container_pid,
                     '-n', 'ip', 'link', 'set', self._veth_name, 'up')
-            nsenter('-t', self._attach_to_container_pid,
+
+            if '0.0.0.0' not in self._ip_netmask:
+                nsenter('-t', self._attach_to_container_pid,
                     '-n', 'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
+                return self
         except Exception as e:
             raise VEthAttachException("attach macvlan eth error:\n{}".format(e.message))
 
