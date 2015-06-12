@@ -119,7 +119,6 @@ class MacvlanEth(VEth):
             if '0.0.0.0' not in self._ip_netmask:
                 nsenter('-t', self._attach_to_container_pid,
                     '-n', 'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
-                return self
         except Exception as e:
             raise VEthAttachException("attach macvlan eth error:\n{}".format(e.message))
 
