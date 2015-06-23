@@ -7,13 +7,17 @@ python:
   - "3.4"
 
 before_install:
-    - sudo apt-get install -y lxc-docker
+  - sudo sh -c "wget -qO- https://get.docker.io/gpg | apt-key add -"
+  - sudo sh -c "echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list"
+  - sudo apt-get update
+  - sudo apt-get install -y lxc-docker
 
 # command to install dependencies
 install:
   - "pip install -r requirements.txt"
 
-services: docker
+before_install:
+ - sudo docker -d
 
 # command to run tests
 script: nosetests
