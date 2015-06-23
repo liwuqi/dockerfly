@@ -7,7 +7,7 @@ python:
   - "3.4"
 
 before_install:
-  - sudo apt-get install docker.io
+    - sudo apt-get install -y lxc-docker
 
 # command to install dependencies
 install:
