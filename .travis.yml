@@ -7,16 +7,13 @@ python:
   - "3.4"
 
 before_install:
-  - sudo apt-get install docker
+  - sudo apt-get install docker.io
 
 # command to install dependencies
 install:
   - "pip install -r requirements.txt"
 
 services: docker
-
-before_script:
-  - sudo systemctl start docker.io
 
 # command to run tests
 script: nosetests
