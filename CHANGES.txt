@@ -1,3 +1,7 @@
+release 1.2.0 2015/06/23
+-------------------------------
+you can add unlimited virtual eths(0.0.0.0/24) to a container
+
 release 1.1.0 2015/04/19
 -------------------------------
 perfect dockerflyui
