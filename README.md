@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/memoryboxes/dockerfly.svg?branch=master)](https://travis-ci.org/memoryboxes/dockerfly)
+
 dockerfly，让你的容器更真实
 =====================================
 dockerfly是为了让你的container运行起来"更像"一台真正的虚拟机，对网络部分做点包装的小工具。
