@@ -103,7 +103,7 @@ class Container(object):
 
     @classmethod
     def resize(cls, container_id, new_size=10240):
-        """resize container disk space
+        """resize container disk space, only support devicemapper storage backend
 
         args:
             new_size: 1024Mb
