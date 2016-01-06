@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 
-from fabric.api import env
+from fabric.api import env, settings
 from fabric.api import run, get, put
 from fabric.network import disconnect_all
+from .errors import ClientExecuteException
 
 class RemoteEnv(object):
 
@@ -34,7 +35,7 @@ class RemoteTask(object):
         env.password = remote_env._password
         env.disable_known_hosts = True
         env.eagerly_disconnect = True
-        env.connection_attempts = 5
+        env.connection_attempts = 10
 
     def __enter__(self):
         return self
@@ -72,7 +73,13 @@ class RunInRemoteTask(RemoteTask):
         self._cmdline = cmdline
 
     def execute(self):
-        return run(self._cmdline)
+        result = ''
+        with settings(warn_only=True):
+            result = run(self._cmdline)
+            if result.return_code != 0:
+                raise  ClientExecuteException()
+        return result
+
 
 class CheckFileExistsRemoteTask(RemoteTask):
     def __init__(self, remote_env, remote_path):
@@ -81,6 +88,14 @@ class CheckFileExistsRemoteTask(RemoteTask):
 
     def execute(self):
         return run("[[ ! -e '{}' ]] || printf yes".format(self._remote_path)) == "yes"
+
+class CheckDirEmptyRemoteTask(RemoteTask):
+    def __init__(self, remote_env, remote_path):
+        super(CheckDirEmptyRemoteTask, self).__init__(remote_env)
+        self._remote_path = remote_path
+
+    def execute(self):
+        return run("find {} -type f 2>/dev/null|[[ $(wc -l) -gt 0 ]] && echo 'no' || echo 'yes'".format(self._remote_path)) == "yes"
 
 class DelFileFromRemoteTask(RemoteTask):
 

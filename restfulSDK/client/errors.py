@@ -18,3 +18,6 @@ class RequestException(ContainerException):
 
 class ContainerStatusException(ContainerException):
     pass
+
+class ClientExecuteException(Exception):
+    pass

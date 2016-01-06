@@ -69,14 +69,16 @@ class Container(object):
                 "last_modify_time": 0,
                 "desc": "dockerfly testcase"
               }
+        veth_name = "v%.6f" % time.time()
+        veth_name = veth_name.replace('.', '')
+        veth_name = ''.join(veth_name[6:])
         self._post_json['container_name'] = name
         self._post_json['gateway'] = gateway
         self._post_json['image_name'] = self.image_name_map[project]
-        self._post_json['eths'] = [[
-                                        "v"+ str(int(time.time())),
-                                        "eth1",
-                                        ip
-                                      ]]
+        self._post_json['eths'] = [(veth_name, "eth1", ip)]
+        for eth in eths.split(','):
+            if eth:
+                self._post_json['eths'].append([eth, "eth1", '0.0.0.0'])
 
     @check_execption
     def create(self):

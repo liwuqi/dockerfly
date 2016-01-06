@@ -13,6 +13,7 @@ from .remote import (RemoteEnv,
                      GetFileFromRemoteTask,
                      RunInRemoteTask,
                      CheckFileExistsRemoteTask,
+                     CheckDirEmptyRemoteTask,
                      DelFileFromRemoteTask)
 
 from .supervisor.rpc import SupervisorRpcClient
@@ -32,27 +33,25 @@ class VMStatus(object):
 
 class VMachine(object):
 
-    supported_projects = ['centos6', 'bpc3', 'npm3', 'smartprobe']
-
-    def __init__(self, name, gateway,
+    def __init__(self, name,
+                       gateway,
                        project,
+                       eths='',
                        desc='',
                        ip=None,
                        user='root',
                        password='rootroot',
                        dockerflyd_server='http://127.0.0.1:5123/v1/'):
-        if project not in self.supported_projects:
-            raise NoSupportProjectException()
 
         if ip is None:
             free_ips = get_free_ips()
             if not free_ips:
                 raise NoFreeIpException()
             else:
-                self._ip= free_ips[int(random() * len(free_ips))]
+                self._ip = free_ips[int(random() * len(free_ips))]
         else:
             self._ip = ip
-
+        self._eths = eths
         self._name = name
         self._gateway = gateway
         self._project = project
@@ -62,11 +61,12 @@ class VMachine(object):
         self._dockerflyd_server = dockerflyd_server
 
         self._container = Container(self._name,
-                                    self._ip,
-                                    self._gateway,
-                                    self._project,
-                                    self._desc,
-                                    self._dockerflyd_server)
+                                    ip=self._ip,
+                                    eths=self._eths,
+                                    gateway=self._gateway,
+                                    project=self._project,
+                                    desc=self._desc,
+                                    dockerflyd_server=self._dockerflyd_server)
 
         if self.status == VMStatus.RUNNING:
             self._env = RemoteEnv(self._ip.split('/')[0], self._user, self._password)
@@ -133,6 +133,12 @@ class VMachine(object):
     def checkfile_exists(self, remote_path):
         with CheckFileExistsRemoteTask(self._env,
                                        remote_path) as task:
+            return task.execute()
+
+    @check_if_running
+    def checkdir_empty(self, remote_path):
+        with CheckDirEmptyRemoteTask(self._env,
+                                     remote_path) as task:
             return task.execute()
 
 
