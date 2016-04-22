@@ -79,7 +79,7 @@ echo "never" > /sys/kernel/mm/transparent_hugepage/defrag
 
 ```
     mkdir -p /var/www
-    cd /var/www/ git clone https://github.com/memoryboxes/dockerfly.git && pip install -r dockerfly/requirements.txt
+    cd /var/www/ && git clone https://github.com/memoryboxes/dockerfly.git && pip install -r dockerfly/requirements.txt
     cd dockerfly && ./run.sh
 ```
 
