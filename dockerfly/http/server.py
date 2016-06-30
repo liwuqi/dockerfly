@@ -5,7 +5,7 @@ import time
 import traceback
 from flask import Flask, request
 from flask import json
-from flask.ext.restful import reqparse, abort, Api, Resource
+from flask.ext.restful import abort, Api, Resource
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
@@ -178,11 +178,12 @@ dockerfly_api.add_resource(ContainerInactive, '/v1/container/<string:container_i
 dockerfly_api.add_resource(ContainerTaskList, '/v1/container/<string:container_id>/tasks')
 dockerfly_api.add_resource(ContainerTask, '/v1/container/<string:container_id>/task/<string:task_id>')
 
-def run_server(host, port, debug=False):
+def run_server(host, port, debug=False, process=10):
     #dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
     http_server = HTTPServer(WSGIContainer(dockerfly_app))
-    http_server.listen(port, address=host)
-    IOLoop.instance().start()
+    http_server.bind(port, address=host)
+    http_server.start(process)
+    IOLoop.current().start()
 
 if __name__ == '__main__':
     run_server(host='0.0.0.0', port=5123, debug=False)

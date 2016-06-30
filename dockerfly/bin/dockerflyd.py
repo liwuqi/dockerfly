@@ -3,6 +3,7 @@
 
 import os
 import grp
+import time
 import signal
 import daemon
 import lockfile
@@ -59,6 +60,8 @@ def rundaemon(host, port):
 
     with context:
         run_server(host=host, port=port, debug=True)
+        #dirty wait for all process running
+        time.sleep(10)
 
 if __name__ == '__main__':
 

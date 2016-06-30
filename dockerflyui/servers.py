@@ -21,12 +21,9 @@ import requests
 from flask import render_template
 from docopt import docopt
 import docker as dockerpy
-from tornado.wsgi import WSGIContainer
-from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
 
 from flask import Flask, json, request, jsonify
-from flask.ext.restful import reqparse, abort, Api, Resource
+from flask.ext.restful import Api, Resource
 
 dockerflyui_app = Flask(__name__)
 dockerflyui_api = Api(dockerflyui_app)
@@ -83,11 +80,7 @@ dockerflyui_api.add_resource(ContainerInactive, '/api/container/<string:containe
 def runweb(host, port, daemon_server):
     global dockerflyd_server
     dockerflyd_server = os.path.join('http://', daemon_server)
-    #dockerflyui_app.run(host=host, port=port, debug=True)
-
-    http_server = HTTPServer(WSGIContainer(dockerflyui_app))
-    http_server.listen(port, address=host)
-    IOLoop.instance().start()
+    dockerflyui_app.run(host=host, port=port, debug=False)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
