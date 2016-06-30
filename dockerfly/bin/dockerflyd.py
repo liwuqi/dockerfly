@@ -10,10 +10,10 @@ import lockfile
 
 import include
 from dockerfly.settings import dockerfly_version
-from dockerfly.settings import RUN_ROOT, LOG_ROOT, DB_ROOT
+from dockerfly.settings import VAR_ROOT, LOG_ROOT, DB_ROOT
 
-if not os.path.exists(RUN_ROOT):
-    os.makedirs(RUN_ROOT)
+if not os.path.exists(VAR_ROOT):
+    os.makedirs(VAR_ROOT)
 if not os.path.exists(LOG_ROOT):
     os.makedirs(LOG_ROOT)
 if not os.path.exists(DB_ROOT):
@@ -22,7 +22,7 @@ if not os.path.exists(DB_ROOT):
 from dockerfly.logger import getLogger, getFh
 from dockerfly.http.server import run_server
 
-pid_file = os.path.join(RUN_ROOT, 'dockerflyd.pid.lock')
+pid_file = os.path.join(VAR_ROOT, 'dockerflyd.pid.lock')
 logger = getLogger()
 
 def dockerflyd_setup():
@@ -40,9 +40,9 @@ def terminate():
     os.kill(os.getpid(), signal.SIGTERM)
 
 context = daemon.DaemonContext(
-    working_directory=RUN_ROOT,
+    working_directory=VAR_ROOT,
     umask=0o002,
-    pidfile=lockfile.FileLock(os.path.join(RUN_ROOT, 'dockerflyd.pid')),
+    pidfile=lockfile.FileLock(os.path.join(VAR_ROOT, 'dockerflyd.pid')),
     files_preserve = [getFh().stream,],
 )
 

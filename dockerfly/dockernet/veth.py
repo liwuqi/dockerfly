@@ -3,9 +3,12 @@
 
 import random
 from sh import nsenter, ip
+from os.path import join
 from dockerfly.errors import (VEthCreateException, VEthUpException,
                               VEthDownException, VEthAttachException,
                               VEthDeleteException)
+from dockerfly import settings
+from dockerfly.contrib import filelock
 from dockerfly.logger import getLogger
 logger = getLogger()
 
@@ -69,8 +72,10 @@ class MacvlanEth(VEth):
 
     def create(self):
         try:
-            ip('link', 'add', self._veth_name,
-                'link', self._link_to, 'address', self.gen_mac_address(), 'type', 'macvlan', 'mode', 'bridge')
+            veth_lockfile = join(settings.DB_ROOT, self._veth_name+'.lock')
+            with filelock.FileLock(veth_lockfile).acquire(timeout=settings.LOCK_TIMEOUT):
+                ip('link', 'add', self._veth_name,
+                    'link', self._link_to, 'address', self.gen_mac_address(), 'type', 'macvlan', 'mode', 'bridge')
         except Exception as e:
             raise VEthCreateException("create macvlan eth error:\n{}".format(e.message))
         return self

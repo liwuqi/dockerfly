@@ -16,10 +16,7 @@ def get_status(container_id):
             return container
     raise LookupError("The container doesn't exist in dockerfly")
 
-def verify_eths(eth_name, eth_ip):
-    if not eth_name:
-        raise VEthStatusException("invalid eth name:{}".format(eth_name))
-
+def verify_ips(eth_ip):
     try:
         socket.inet_aton(eth_ip.split('/')[0])
     except socket.error as e:
@@ -29,11 +26,8 @@ def verify_eths(eth_name, eth_ip):
     for container in get_all_status():
         all_eths_status.extend(container['eths'])
 
-    all_eth_names = [name[0] for name in all_eths_status]
     all_eth_ips = [name[2] for name in all_eths_status]
 
-    if eth_name in all_eth_names:
-        raise VEthStatusException("eth name has already existed")
     if eth_ip in all_eth_ips and '0.0.0.0' not in eth_ip:
         raise VEthStatusException("eth ip has already existed")
 
