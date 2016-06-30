@@ -6,6 +6,7 @@ import traceback
 from flask import Flask, request
 from flask import json
 from flask.ext.restful import reqparse, abort, Api, Resource
+from gevent.wsgi import WSGIServer
 
 import include
 from dockerfly.settings import dockerfly_version
@@ -176,7 +177,9 @@ dockerfly_api.add_resource(ContainerTaskList, '/v1/container/<string:container_i
 dockerfly_api.add_resource(ContainerTask, '/v1/container/<string:container_id>/task/<string:task_id>')
 
 def run_server(host, port, debug=False):
-    dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
+    #dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
+    http_server = WSGIServer((host, port), dockerfly_app)
+    http_server.serve_forever()
 
 if __name__ == '__main__':
     run_server(host='0.0.0.0', port=5123, debug=False)
