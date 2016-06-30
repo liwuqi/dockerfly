@@ -6,7 +6,9 @@ import traceback
 from flask import Flask, request
 from flask import json
 from flask.ext.restful import reqparse, abort, Api, Resource
-from gevent.wsgi import WSGIServer
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 
 import include
 from dockerfly.settings import dockerfly_version
@@ -178,8 +180,9 @@ dockerfly_api.add_resource(ContainerTask, '/v1/container/<string:container_id>/t
 
 def run_server(host, port, debug=False):
     #dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
-    http_server = WSGIServer((host, port), dockerfly_app)
-    http_server.serve_forever()
+    http_server = HTTPServer(WSGIContainer(dockerfly_app))
+    http_server.listen(port, address=host)
+    IOLoop.instance().start()
 
 if __name__ == '__main__':
     run_server(host='0.0.0.0', port=5123, debug=False)
