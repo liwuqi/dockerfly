@@ -65,7 +65,7 @@ class ContainerList(Resource):
             create_containers_json = request.get_json()
             for container in create_containers_json:
                 for eth in container['eths']:
-                    ContainerStatus.verify_eths(eth[2])
+                    ContainerStatus.verify_ips(eth[2])
 
                 container['id'] = ContainerCtl.create(container['image_name'],
                                                       container['run_cmd'],
