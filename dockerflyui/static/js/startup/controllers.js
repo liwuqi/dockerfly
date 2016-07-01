@@ -177,6 +177,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                 //check if ip and eth name is unique
                 var eths = $scope.map($scope.containerModel.eths, function(eth){return eth['eth_name']});
                 var ips = $scope.map($scope.containerModel.eths, function(eth){return eth['ip']});
+                /*
                 if (DockerflyUI.checkDuplicates(eths)) {
                     var alertModal = $modal({
                                 title: 'Error',
@@ -185,6 +186,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                     alertModal.$promise.then(alertModal.show);
                     return;
                 }
+                */
                 if (DockerflyUI.checkDuplicates(ips)) {
                     var alertModal = $modal({
                                 title: 'Error',
