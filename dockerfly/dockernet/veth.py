@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import random
+import docker as dockerpy
+
 from sh import docker, ip
 from os.path import join
 from dockerfly.errors import (VEthCreateException, VEthUpException,
@@ -18,6 +20,8 @@ class VEth(object):
     You can setup your own macvlan,macvtap, bridge,veth...
     """
 
+    docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock', timeout=300)
+
     def __init__(self, name, ip_netmask, link_to):
         """
 
@@ -31,7 +35,7 @@ class VEth(object):
         self._ip_netmask = ip_netmask
         self._link_to = link_to
 
-    def attach_to_container(self, container_pid):
+    def attach_to_container(self, container_id):
         raise NotImplementedError
 
     @classmethod
@@ -58,9 +62,9 @@ class MacvlanEth(VEth):
 
     if macvlan_eth is default route, then do:
 
-        nsenter -t $(docker container pid) -n ip route del default
-        nsenter -t $(docker container pid) -n ip addr add 192.168.1.10 dev em0v0
-        nsenter -t $(docker container pid) -n ip route add default via 192.168.159.2 dev em0v0
+        docker exec $(docker container id) ip route del default
+        docker exec $(docker container id) ip addr add 192.168.1.10 dev em0v0
+        docker exec $(docker container id) ip route add default via 192.168.159.2 dev em0v0
 
     if ip='0.0.0.0/0', don't set ip address
     """
@@ -68,7 +72,7 @@ class MacvlanEth(VEth):
     def __init__(self, name, ip, link_to):
         super(MacvlanEth, self).__init__(name, ip, link_to)
         self._is_attach_to_container = False
-        self._attach_to_container_pid = None
+        self._attach_to_container_id = None
 
     def create(self):
         try:
@@ -83,8 +87,8 @@ class MacvlanEth(VEth):
     def up(self):
         try:
             if self._is_attach_to_container:
-                nsenter('-t', self._attach_to_container_pid,
-                        '-n', 'ip', 'link', 'del', self._veth_name)
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'link', 'del', self._veth_name)
             else:
                 ip('link', 'set', self._veth_name, 'up')
         except Exception as e:
@@ -94,8 +98,8 @@ class MacvlanEth(VEth):
     def down(self):
         try:
             if self._is_attach_to_container:
-                nsenter('-t', self._attach_to_container_pid,
-                        '-n', 'ip', 'link', self._veth_name, 'down')
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'link', self._veth_name, 'down')
             else:
                 ip('link', 'set', self._veth_name, 'down')
         except Exception as e:
@@ -105,25 +109,26 @@ class MacvlanEth(VEth):
     def delete(self):
         try:
             if self._is_attach_to_container:
-                nsenter('-t', self._attach_to_container_pid,
-                        '-n', 'ip', 'link', 'del', self._veth_name)
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'link', 'del', self._veth_name)
             else:
                 ip('link', 'del', self._veth_name)
         except Exception as e:
             raise VEthDeleteException("delete macvlan eth error:\n{}".format(e.message))
 
-    def attach_to_container(self, container_pid, is_route=False, gateway=None):
+    def attach_to_container(self, container_id, is_route=False, gateway=None):
         self._is_attach_to_container = True
-        self._attach_to_container_pid = container_pid
+        self._attach_to_container_id = container_id
 
         try:
-            ip('link', 'set', 'netns', self._attach_to_container_pid, self._veth_name)
-            nsenter('-t', self._attach_to_container_pid,
-                    '-n', 'ip', 'link', 'set', self._veth_name, 'up')
+            pid = self.docker_cli.inspect_container(container_id)['State']['Pid']
+            ip('link', 'set', 'netns', pid, self._veth_name)
+            docker('exec', self._attach_to_container_id,
+                   'ip', 'link', 'set', self._veth_name, 'up')
 
             if '0.0.0.0' not in self._ip_netmask:
-                nsenter('-t', self._attach_to_container_pid,
-                    '-n', 'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
         except Exception as e:
             raise VEthAttachException("attach macvlan eth error:\n{}".format(e.message))
 
@@ -131,14 +136,14 @@ class MacvlanEth(VEth):
             if not gateway:
                 raise ValueError("Please set the gateway for %s" % self._veth_name)
             else:
-                nsenter('-t', self._attach_to_container_pid,
-                        '-n', 'ip', 'route', 'del', 'default')
-                nsenter('-t', self._attach_to_container_pid,
-                        '-n', 'ip', 'route', 'add', 'default', 'via', gateway, 'dev', self._veth_name)
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'route', 'del', 'default')
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'route', 'add', 'default', 'via', gateway, 'dev', self._veth_name)
                 #arping my gateway, cause the gateway to flush the ARP cache for my IP address
                 try:
-                    nsenter('-t', self._attach_to_container_pid,
-                            '-n', 'ping', '-c', '1', gateway)
+                    docker('exec', self._attach_to_container_id,
+                           'ping', '-c', '1', gateway)
                 except Exception as e:
                     logger.warning(e.message)
 

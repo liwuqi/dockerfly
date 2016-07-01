@@ -74,13 +74,11 @@ class Container(object):
 
         for index, (veth, link_to, ip_netmask) in enumerate(veths):
             macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
-            container_pid = cls.docker_cli.inspect_container(container_id)['State']['Pid']
-
             if index == 0:
-                macvlan_eth.attach_to_container(container_pid,
+                macvlan_eth.attach_to_container(container_id,
                                                 is_route=True, gateway=gateway)
             else:
-                macvlan_eth.attach_to_container(container_pid)
+                macvlan_eth.attach_to_container(container_id)
 
     @classmethod
     def stop(cls, container_id):

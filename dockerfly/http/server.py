@@ -18,7 +18,7 @@ from dockerfly.settings import dockerfly_version, RUN_ROOT
 from dockerfly.runtime import container as ContainerStatus
 from dockerfly.dockerlib.container import Container as ContainerCtl
 from dockerfly.contrib.filelock import FileLock
-from dockerfly.errors import DockerflyException
+from dockerfly.errors import DockerflyException, VEthStatusException
 from dockerfly.logger import getLogger
 
 dockerfly_app = Flask(__name__)
@@ -71,6 +71,10 @@ class ContainerList(Resource):
                 with FileLock(join(RUN_ROOT, 'verify_ips.lock')):
                     for eth in container['eths']:
                         ContainerStatus.verify_ips(eth[2])
+
+                    eth_names = [eth[0] for eth in container['eths']]
+                    if len(eth_names) > len(set(eth_names)):
+                        raise VEthStatusException('You set duplicate eth!')
 
                     container['uuid'] = str(uuid.uuid1())
                     container['id'] = None
