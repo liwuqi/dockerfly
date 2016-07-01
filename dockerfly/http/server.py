@@ -25,7 +25,7 @@ logger = getLogger()
 
 def abort_if_container_doesnt_exist(container_id):
     for item in ContainerStatus.get_all_status():
-        if len(container_id) >= 12 and item['id'].startswith(container_id):
+        if container_id and len(container_id) >= 12 and item['id'].startswith(container_id):
             return item['id']
     abort(404, message= json.dumps(
                 {'errno':1000,
