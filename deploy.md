@@ -63,12 +63,6 @@ echo "never" > /sys/kernel/mm/transparent_hugepage/enabled
 echo "never" > /sys/kernel/mm/transparent_hugepage/defrag
 ```
 
-* install nsenter
-
-```
-    docker run --rm -v /usr/local/bin:/target docker-registry.dev.netis.com.cn:5000/crossflow/nsenter
-```
-
 * install pip
 ```
     easy_install pip
