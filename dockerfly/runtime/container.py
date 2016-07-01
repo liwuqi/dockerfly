@@ -51,11 +51,11 @@ def add_status(containers):
 
     update_db(curr_containers, db_name)
 
-def remove_status(container_ids):
+def remove_status(container_ids, key='id'):
     curr_containers = get_all_status()
     new_containers = []
     for index, container in enumerate(curr_containers):
-        if container['id'] not in container_ids:
+        if container[key] not in container_ids:
             new_containers.append(container)
 
     update_db(new_containers, db_name)
