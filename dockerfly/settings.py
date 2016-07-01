@@ -10,7 +10,7 @@ dockerfly_version = open(os.path.join(here, 'version.txt')).read().strip()
 VAR_ROOT= '/var/dockerfly'
 LOG_ROOT = os.path.join(VAR_ROOT, 'log')
 DB_ROOT  = os.path.join(VAR_ROOT, 'db')
-
+RUN_ROOT  = os.path.join(VAR_ROOT, 'run')
 LOCK_TIMEOUT = 10
 
 default_container_db = os.path.join(DB_ROOT, 'containers.json')
@@ -23,4 +23,3 @@ try:
     from local_settings import *
 except ImportError:
     pass
-

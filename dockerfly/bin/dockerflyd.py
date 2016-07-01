@@ -9,8 +9,9 @@ import daemon
 import lockfile
 
 import include
-from dockerfly.settings import dockerfly_version
-from dockerfly.settings import VAR_ROOT, LOG_ROOT, DB_ROOT
+from dockerfly.settings import dockerfly_version, LOCK_TIMEOUT
+from dockerfly.settings import VAR_ROOT, LOG_ROOT, DB_ROOT, RUN_ROOT
+from dockerfly.contrib.filelock import FileLock
 
 if not os.path.exists(VAR_ROOT):
     os.makedirs(VAR_ROOT)
@@ -18,20 +19,24 @@ if not os.path.exists(LOG_ROOT):
     os.makedirs(LOG_ROOT)
 if not os.path.exists(DB_ROOT):
     os.makedirs(DB_ROOT)
+if not os.path.exists(RUN_ROOT):
+    os.makedirs(RUN_ROOT)
 
 from dockerfly.logger import getLogger, getFh
 from dockerfly.http.server import run_server
 
-pid_file = os.path.join(VAR_ROOT, 'dockerflyd.pid.lock')
+PIDFILE = FileLock(os.path.join(RUN_ROOT, 'dockerflyd.pid.lock'))
 logger = getLogger()
 
 def dockerflyd_setup():
-    if os.path.exists(pid_file):
-        logger.error("{} has already existed".format(pid_file))
+    if PIDFILE.is_locked:
+        logger.error("{} has already existed".format(PIDFILE.lock_file))
+    else:
+        PIDFILE.acquire(timeout=LOCK_TIMEOUT)
 
 def dockerflyd_cleanup():
-    if os.path.exists(pid_file):
-        os.remove(pid_file)
+    if PIDFILE.is_locked:
+        PIDFILE.release()
 
 def dockerflyd_reload_config():
     pass
@@ -40,9 +45,9 @@ def terminate():
     os.kill(os.getpid(), signal.SIGTERM)
 
 context = daemon.DaemonContext(
-    working_directory=VAR_ROOT,
+    working_directory=RUN_ROOT,
     umask=0o002,
-    pidfile=lockfile.FileLock(os.path.join(VAR_ROOT, 'dockerflyd.pid')),
+    pidfile=PIDFILE,
     files_preserve = [getFh().stream,],
 )
 

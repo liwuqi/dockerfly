@@ -7,7 +7,7 @@ import time
 import shutil
 
 from dockerfly import settings
-from dockerfly.contrib import filelock
+from dockerfly.contrib.filelock import FileLock
 
 db_dir = settings.DB_ROOT
 dbs = settings.dbs
@@ -29,20 +29,20 @@ def init_db(func):
 
 @init_db
 def update_db(content, db_name):
-    with filelock.FileLock(get_db_lockfile(db_name)).acquire(timeout=settings.LOCK_TIMEOUT):
+    with FileLock(get_db_lockfile(db_name)).acquire(timeout=settings.LOCK_TIMEOUT):
         db_file = os.path.join(db_dir, db_name)
         with open(db_file, 'w') as db:
             json.dump(content, db, indent=4)
 
 @init_db
 def get_db(db_name):
-    with filelock.FileLock(get_db_lockfile(db_name)).acquire(timeout=settings.LOCK_TIMEOUT):
+    with FileLock(get_db_lockfile(db_name)).acquire(timeout=settings.LOCK_TIMEOUT):
         db_file = os.path.join(db_dir, db_name)
         with open(db_file, 'r') as db:
             return json.load(db)
 
 def del_db(db_name):
-    with filelock.FileLock(get_db_lockfile(db_name)).acquire(timeout=settings.LOCK_TIMEOUT):
+    with FileLock(get_db_lockfile(db_name)).acquire(timeout=settings.LOCK_TIMEOUT):
         db_file = os.path.join(db_dir, db_name)
         if os.path.exists(db_file):
             os.remove(db_file)
