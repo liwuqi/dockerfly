@@ -52,12 +52,6 @@ docker推荐一个container内只运行一个进程，网络部分同docker主�
 
 * 推荐linux内核3.18以上，推荐开启docker overlay文件系统。`docker>=1.6`
 
-* 安装nsenter
-
-    ```
-    docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
-    ```
-
 *  pull一个实验镜像下来
 
     ```
@@ -124,12 +118,10 @@ dockerfly采用了在容器内创建Macvlan网卡的办法来增强docker的网�
 * 为MacVlanEthA设置IP，路由
 
     ```
-    nsenter -t $(docker container pid) -n ip route del default
-    nsenter -t $(docker container pid) -n ip addr add 192.168.1.100 dev MacVlanEthA
-    nsenter -t $(docker container pid) -n ip route add default via 192.168.159.1 dev MacVlanEthA
+    docker exec $(docker container id) ip route del default
+    docker exec $(docker container id) ip addr add 192.168.1.100 dev MacVlanEthA
+    docker exec $(docker container id) ip route add default via 192.168.159.1 dev MacVlanEthA
     ```
-
->> 这里借助了[nsenter](https://github.com/jpetazzo/nsenter)这个工具，它帮助我们在container中执行命令，如果是`>=docker1.4`的版本，也可以用docker exec来替代
 
 * 在docker container xxx内执行:
 

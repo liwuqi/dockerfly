@@ -13,6 +13,8 @@ DB_ROOT  = os.path.join(VAR_ROOT, 'db')
 RUN_ROOT  = os.path.join(VAR_ROOT, 'run')
 LOCK_TIMEOUT = 10
 
+DAEMON_PROCESS_COUNT = 20
+
 default_container_db = os.path.join(DB_ROOT, 'containers.json')
 default_ippool_db = os.path.join(DB_ROOT, 'ippool.json')
 dbs = [default_container_db, default_ippool_db]

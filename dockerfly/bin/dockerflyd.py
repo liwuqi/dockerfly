@@ -9,7 +9,7 @@ import daemon
 import lockfile
 
 import include
-from dockerfly.settings import dockerfly_version, LOCK_TIMEOUT
+from dockerfly.settings import dockerfly_version, LOCK_TIMEOUT, DAEMON_PROCESS_COUNT
 from dockerfly.settings import VAR_ROOT, LOG_ROOT, DB_ROOT, RUN_ROOT
 from dockerfly.contrib.filelock import FileLock
 
@@ -64,7 +64,7 @@ def rundaemon(host, port):
     dockerflyd_setup()
 
     with context:
-        run_server(host=host, port=port, debug=True)
+        run_server(host=host, port=port, debug=True, process=DAEMON_PROCESS_COUNT)
         #dirty wait for all process running
         time.sleep(10)
 
