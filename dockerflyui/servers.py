@@ -47,29 +47,36 @@ class ImageList(Resource):
 
 class ContainerList(Resource):
     def get(self):
-        return requests.get(dockerflyd_server + '/v1/containers').json()
+        response = requests.get(dockerflyd_server + '/v1/containers')
+        return response.json(), response.status_code
 
     def post(self):
         create_containers_json = request.get_json()
         headers = {'content-type': 'application/json'}
-        return requests.post(dockerflyd_server + '/v1/containers',
+        response = requests.post(dockerflyd_server + '/v1/containers',
                              data=json.dumps(create_containers_json),
-                             headers=headers).json()
+                             headers=headers)
+        return response.json(), response.status_code
+
 
 class Container(Resource):
     def get(self, container_id):
-        return requests.get(dockerflyd_server + '/v1/container/' + container_id).json()
+        response = requests.get(dockerflyd_server + '/v1/container/' + container_id)
+        return response.json(), response.status_code
 
     def delete(self, container_id):
-        return requests.delete(dockerflyd_server + '/v1/container/' + container_id).json()
+        response = requests.delete(dockerflyd_server + '/v1/container/' + container_id)
+        return response.json(), response.status_code
 
 class ContainerActive(Resource):
     def put(self, container_id):
-        return requests.put(dockerflyd_server + '/v1/container/' + container_id + '/active').json()
+        response = requests.put(dockerflyd_server + '/v1/container/' + container_id + '/active')
+        return response.json(), response.status_code
 
 class ContainerInactive(Resource):
     def put(self, container_id):
-        return requests.put(dockerflyd_server + '/v1/container/' + container_id + '/inactive').json()
+        response = requests.put(dockerflyd_server + '/v1/container/' + container_id + '/inactive')
+        return response.json(), response.status_code
 
 dockerflyui_api.add_resource(ImageList, '/api/images')
 dockerflyui_api.add_resource(ContainerList, '/api/containers')

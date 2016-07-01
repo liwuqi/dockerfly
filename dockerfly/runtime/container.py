@@ -31,14 +31,14 @@ def verify_ips(eth_ip):
     if eth_ip in all_eth_ips and '0.0.0.0' not in eth_ip:
         raise VEthStatusException("eth ip has already existed")
 
-def update_status(containers):
+def update_status(containers, key='id'):
     curr_containers = get_all_status()
     updating_containers = containers
     new_containers = []
 
     for curr_container in curr_containers:
         for updating_container in updating_containers:
-            if updating_container.get('id', None) and updating_container['id'] == curr_container['id']:
+            if updating_container.get(key, None) and updating_container[key] == curr_container[key]:
                 for k,v in updating_container.items():
                     curr_container[k] = v
         new_containers.append(curr_container)

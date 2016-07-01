@@ -412,10 +412,10 @@ FileLock = None
 
 if msvcrt:
     FileLock = WindowsFileLock
-elif fcntl:
-    FileLock = UnixFileLock
+#elif fcntl:
+#    FileLock = UnixFileLock
 else:
     FileLock = SoftFileLock
 
-    if warnings is not None:
-        warnings.warn("only soft file lock is available")
+#    if warnings is not None:
+#        warnings.warn("only soft file lock is available")

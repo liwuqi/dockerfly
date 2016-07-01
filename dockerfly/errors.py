@@ -9,7 +9,7 @@ class DockerflyException(Exception):
         self._errno = errno
 
     def __str__(self):
-        return repr("errno:{}, errMsg:{}".format(self._errno, self._message))
+        return repr('"errno":{}, "errMsg":{}'.format(self._errno, self._message))
 
     @property
     def message(self):

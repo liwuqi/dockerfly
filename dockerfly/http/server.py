@@ -3,6 +3,8 @@
 
 import time
 import traceback
+import uuid
+
 from flask import Flask, request
 from flask import json
 from flask.ext.restful import abort, Api, Resource
@@ -67,6 +69,10 @@ class ContainerList(Resource):
                 for eth in container['eths']:
                     ContainerStatus.verify_ips(eth[2])
 
+                container['uuid'] = str(uuid.uuid1())
+                container['id'] = None
+                container['pid'] = None
+                ContainerStatus.add_status([container])
                 container['id'] = ContainerCtl.create(container['image_name'],
                                                       container['run_cmd'],
                                                       container['container_name'])
@@ -79,8 +85,8 @@ class ContainerList(Resource):
                     ContainerCtl.resize(container['id'], container['resize'])
                 container['pid'] = ContainerCtl.get_pid(container['id'])
                 container['last_modify_time'] = time.time()
+                ContainerStatus.update_status([container], key='uuid')
 
-            ContainerStatus.add_status(create_containers_json)
             return create_containers_json, 201
 
         except DockerflyException as e:
@@ -93,6 +99,7 @@ class ContainerList(Resource):
             logger.error(traceback.format_exc())
             if container and container.get('id', None):
                 ContainerCtl.remove(container['id'])
+                ContainerStatus.remove_status([container['id']])
 
             if not container:
                 return {"errno":1000, "errMsg":"invalid json request"}, 400
@@ -178,7 +185,7 @@ dockerfly_api.add_resource(ContainerInactive, '/v1/container/<string:container_i
 dockerfly_api.add_resource(ContainerTaskList, '/v1/container/<string:container_id>/tasks')
 dockerfly_api.add_resource(ContainerTask, '/v1/container/<string:container_id>/task/<string:task_id>')
 
-def run_server(host, port, debug=False, process=10):
+def run_server(host, port, debug=False, process=20):
     #dockerfly_app.run(use_debugger=debug, debug=debug, use_reloader=False, host=host, port=port)
     http_server = HTTPServer(WSGIContainer(dockerfly_app))
     http_server.bind(port, address=host)
@@ -186,4 +193,4 @@ def run_server(host, port, debug=False, process=10):
     IOLoop.current().start()
 
 if __name__ == '__main__':
-    run_server(host='0.0.0.0', port=5123, debug=False)
+    run_server(host='0.0.0.0', port=5123, debug=True)
