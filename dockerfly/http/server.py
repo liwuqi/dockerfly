@@ -5,6 +5,7 @@ import time
 import traceback
 import uuid
 
+from os.path import join
 from flask import Flask, request
 from flask import json
 from flask.ext.restful import abort, Api, Resource
@@ -13,9 +14,10 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 
 import include
-from dockerfly.settings import dockerfly_version
+from dockerfly.settings import dockerfly_version, RUN_ROOT
 from dockerfly.runtime import container as ContainerStatus
 from dockerfly.dockerlib.container import Container as ContainerCtl
+from dockerfly.contrib.filelock import FileLock
 from dockerfly.errors import DockerflyException
 from dockerfly.logger import getLogger
 
@@ -66,13 +68,14 @@ class ContainerList(Resource):
             container = None
             create_containers_json = request.get_json()
             for container in create_containers_json:
-                for eth in container['eths']:
-                    ContainerStatus.verify_ips(eth[2])
+                with FileLock(join(RUN_ROOT, 'verify_ips.lock')):
+                    for eth in container['eths']:
+                        ContainerStatus.verify_ips(eth[2])
 
-                container['uuid'] = str(uuid.uuid1())
-                container['id'] = None
-                container['pid'] = None
-                ContainerStatus.add_status([container])
+                    container['uuid'] = str(uuid.uuid1())
+                    container['id'] = None
+                    container['pid'] = None
+                    ContainerStatus.add_status([container])
                 container['id'] = ContainerCtl.create(container['image_name'],
                                                       container['run_cmd'],
                                                       container['container_name'])
