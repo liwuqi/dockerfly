@@ -38,7 +38,8 @@ def update_status(containers, key='id'):
 
     for curr_container in curr_containers:
         for updating_container in updating_containers:
-            if updating_container.get(key, None) and updating_container[key] == curr_container[key]:
+            if updating_container.get(key, None) and curr_container.get(key, None) \
+               and updating_container[key] == curr_container[key]:
                 for k,v in updating_container.items():
                     curr_container[k] = v
         new_containers.append(curr_container)
@@ -55,7 +56,7 @@ def remove_status(container_ids, key='id'):
     curr_containers = get_all_status()
     new_containers = []
     for index, container in enumerate(curr_containers):
-        if container[key] not in container_ids:
+        if container.get(key, None) not in container_ids:
             new_containers.append(container)
 
     update_db(new_containers, db_name)
