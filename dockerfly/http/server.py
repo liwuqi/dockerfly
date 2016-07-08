@@ -100,7 +100,7 @@ class ContainerList(Resource):
             logger.error(traceback.format_exc())
             if container and container.get('id', None):
                 ContainerCtl.remove(container['id'])
-                ContainerStatus.remove_status([container['uuid']], key='uuid')
+                ContainerStatus.remove_status([container.get('uuid', None)], key='uuid')
 
             if not container:
                 return {"errno":1000, "errMsg":"invalid json request"}, 400
