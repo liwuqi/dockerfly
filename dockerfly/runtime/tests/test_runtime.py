@@ -30,6 +30,7 @@ class TestRuntime(unittest.TestCase):
                     "image_name": "172.16.11.13:5000/brain/centos:centos6_sshd",
                     "run_cmd": "/usr/sbin/sshd -D",
                     'id':1,
+                    'uuid': 'aa-bb-cc-dd',
                     'status':'running',
                     'last_modify_time':1418176930.012
                 }, {
@@ -70,6 +71,7 @@ class TestRuntime(unittest.TestCase):
                 "image_name": "172.16.11.13:5000/brain/centos:centos6_sshd",
                 "run_cmd": "/usr/sbin/sshd -D",
                 'id':1,
+                'uuid': 'aa-bb-cc-dd',
                 'status':'stop',
                 'last_modify_time':1418176930.012
             }
@@ -104,6 +106,12 @@ class TestRuntime(unittest.TestCase):
     def test_remove_container_status(self):
         remove_container_ids = ([1])
         remove_status(remove_container_ids)
+        self._containers.pop(0)
+        self.assertEqual(get_all_status(), self._containers)
+
+    def test_remove_container_status_by_uuid(self):
+        remove_container_uuids = (['aa-bb-cc-dd'])
+        remove_status(remove_container_uuids, key='uuid')
         self._containers.pop(0)
         self.assertEqual(get_all_status(), self._containers)
 

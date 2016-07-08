@@ -4,7 +4,9 @@
 import time
 import json
 import requests
+import random
 
+from dockerfly.settings import IMAGE_NAME_MAP
 from .errors import (RequestException,
                     ContainerException,
                     NoCreatedContainerException)
@@ -37,12 +39,12 @@ class ContainerList(object):
 
 class Container(object):
 
-    image_name_map = {
-            'centos6':'memorybox/centos6_sshd',
-        }
+    image_name_map = IMAGE_NAME_MAP
 
     def __init__(self, name, ip,
-                       gateway, project='centos6',
+                       gateway,
+                       eths='',
+                       project='centos6',
                        desc="dockerfly testcase",
                        dockerflyd_server='http://127.0.0.1:5123/v1/'):
         """ setup all params of a container
@@ -60,12 +62,12 @@ class Container(object):
                       ]
                     ],
 
-                "image_name": "memorybox/centos6_sshd",
+                "image_name": "docker-registry.dev.netis.com.cn:5000/crossflow/centos6",
                 "run_cmd": "/usr/bin/svscan /etc/dockerservices",
                 "id": None,
                 "pid": None,
                 "status": "running",
-                "container_name": "dockerfly testcase",
+                "container_name": "dockerfly_testcase",
                 "last_modify_time": 0,
                 "desc": "dockerfly testcase"
               }
