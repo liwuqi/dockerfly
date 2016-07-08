@@ -100,6 +100,8 @@ class ContainerList(Resource):
             logger.error(traceback.format_exc())
             if container and container.get('id', None):
                 ContainerCtl.remove(container['id'])
+                ContainerStatus.remove_status([container.get('id', None)])
+            else:
                 ContainerStatus.remove_status([container.get('uuid', None)], key='uuid')
 
             if not container:
