@@ -11,6 +11,7 @@ Usage:
   dockerflyctl    resize       <container_id> <new_size>
   dockerflyctl    getpid       <container_id>
   dockerflyctl    rundaemon    <ip> <port>
+  dockerflyctl    sync
 
 Options:
   -h --help             Show this screen.
@@ -24,6 +25,7 @@ Example:
     resize container                dockerflyctl    resize    e5d898c10bff 20480
     getpid container pid            dockerflyctl    getpid    e5d898c10bff
     run daemon server               dockerflyctl    rundaemon 0.0.0.0 5123
+    sync containers db              dockerflyctl    sync
 """
 
 import json
@@ -34,6 +36,7 @@ import docker as dockerpy
 import include
 from dockerfly.settings import dockerfly_version
 from dockerfly.dockerlib.container import Container
+from dockerfly.runtime import container as ContainerStatus
 from dockerfly.bin.dockerflyd import rundaemon
 
 def main():
@@ -75,6 +78,21 @@ def main():
                 print "Container running:ContainerId(%s) Pid(%s)" %(container_id,
                                  docker_cli.inspect_container(container_id)['State']['Pid']
                         )
+
+    if arguments['sync']:
+        for container  in docker_cli.containers(all=True):
+            db_container = {}
+            try:
+                db_container = ContainerStatus.get_status(container['id'])
+            except LookupError:
+                inspect_status = docker_cli.inspect_container(arguments['<container_id>'])
+                db_container['id'] = inspect_status['State']['Id']
+                db_container['pid'] = inspect_status['State']['Pid']
+                db_container['image_name'] = inspect_status['Config']['Image']
+                db_container['container_name'] = inspect_status['Name'].strip('/')
+                db_container['run_cmd'] = ' '.join(inspect_status['Args'])
+                db_container['status'] = 'running' if inspect_status['State']['running'] else 'stopped'
+                ContainerStatus.add_status(container)
 
     if arguments['rm']:
         Container.remove(arguments['<container_id>'])
