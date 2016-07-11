@@ -56,7 +56,8 @@ def remove_status(container_ids, key='id'):
     curr_containers = get_all_status()
     new_containers = []
     for index, container in enumerate(curr_containers):
-        if container.get(key, None) not in container_ids:
+        if container.get(key, None) not in container_ids or \
+           container.get(key, None) is None:
             new_containers.append(container)
 
     update_db(new_containers, db_name)
