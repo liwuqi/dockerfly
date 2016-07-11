@@ -80,19 +80,38 @@ def main():
                         )
 
     if arguments['sync']:
+        containers = []
         for container  in docker_cli.containers(all=True):
             db_container = {}
+            inspect_status = docker_cli.inspect_container(container['Id'])
+            db_container['id'] = inspect_status['Id']
+            db_container['pid'] = inspect_status['State']['Pid']
+            db_container['image_name'] = inspect_status['Config']['Image']
+            db_container['container_name'] = inspect_status['Name'].strip('/')
+            db_container['run_cmd'] = ' '.join(inspect_status['Args'])
+            db_container['status'] = 'running' if inspect_status['State']['Running'] else 'stopped'
+            containers.append(db_container)
+
+        #remove no exist container
+        for container in ContainerStatus.get_all_status():
+            if container['id'] not in [co['id'] for co in containers]:
+                ContainerStatus.remove_status([container['id']])
+                print "remove:====================="
+                print container
+
+        #update or remove container status
+        for container in containers:
             try:
-                db_container = ContainerStatus.get_status(container['id'])
+                modify_container = ContainerStatus.get_status(container['id'])
+                if container['status'] != modify_container['status']:
+                    modify_container['status'] = container['status']
+                    ContainerStatus.update_status([modify_container])
+                    print "update:====================="
+                    print modify_container
             except LookupError:
-                inspect_status = docker_cli.inspect_container(arguments['<container_id>'])
-                db_container['id'] = inspect_status['State']['Id']
-                db_container['pid'] = inspect_status['State']['Pid']
-                db_container['image_name'] = inspect_status['Config']['Image']
-                db_container['container_name'] = inspect_status['Name'].strip('/')
-                db_container['run_cmd'] = ' '.join(inspect_status['Args'])
-                db_container['status'] = 'running' if inspect_status['State']['running'] else 'stopped'
-                ContainerStatus.add_status(container)
+                ContainerStatus.add_status([container])
+                print "add:====================="
+                print container
 
     if arguments['rm']:
         Container.remove(arguments['<container_id>'])
