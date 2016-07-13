@@ -18,7 +18,7 @@ requirements:
 
 ```
     curl -O -sSL https://get.docker.com/rpm/1.7.1/centos-7/RPMS/x86_64/docker-engine-1.7.1-1.el7.centos.x86_64.rpm
-    yum localinstall --nogpgcheck docker-engine-1.7.1-1.el6.x86_64.rpm
+    yum localinstall --nogpgcheck docker-engine-1.7.1-1.el7.x86_64.rpm
 ```
 
 * config docker
@@ -30,7 +30,8 @@ requirements:
     修改:
     ExecStart=/usr/bin/docker -d -H fd:// -s overlay --insecure-registry docker-registry.dev.netis.com.cn:5000 -g /opt/docker
 
-    systemctl docker restart
+    systemctl restart docker
+    systemctl daemon-reload
 ```
 
 * config dns
