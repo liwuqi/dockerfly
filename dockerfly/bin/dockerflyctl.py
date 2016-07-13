@@ -29,7 +29,7 @@ Example:
 """
 
 import json
-from sh import docker, nsenter
+from sh import docker
 from docopt import docopt
 import docker as dockerpy
 
