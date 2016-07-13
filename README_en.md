@@ -195,4 +195,4 @@ http://choosealicense.com/licenses/bsd-2-clause/
 
 LATEST VERSION
 ========================
-1.3.0
+1.4.0
