@@ -10,8 +10,8 @@ requirements:
 
 ```
     rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
-    yum install --enablerepo=elrepo-kernel kernel-ml
-    yum install --enablerepo=elrepo-kernel kernel-ml-{firmware,headers,devel}
+    yum install --enablerepo=elrepo-kernel kernel-lt
+    yum install --enablerepo=elrepo-kernel kernel-lt-{firmware,headers,devel}
 ```
 
 * install docker
