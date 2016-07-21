@@ -80,13 +80,13 @@ class ContainerList(Resource):
                     container['id'] = None
                     container['pid'] = None
                     ContainerStatus.add_status([container])
-                container['id'] = ContainerCtl.create(container['image_name'],
-                                                      container['run_cmd'],
-                                                      container['container_name'])
+                    container['id'] = ContainerCtl.create(container['image_name'],
+                                                          container['run_cmd'],
+                                                          container['container_name'])
 
-                ContainerCtl.start(container['id'],
-                                   container['eths'],
-                                   container['gateway'])
+                    ContainerCtl.start(container['id'],
+                                       container['eths'],
+                                       container['gateway'])
 
                 if container.get('resize', None):
                     ContainerCtl.resize(container['id'], container['resize'])
