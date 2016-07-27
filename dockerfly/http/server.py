@@ -88,11 +88,11 @@ class ContainerList(Resource):
                                        container['eths'],
                                        container['gateway'])
 
-                if container.get('resize', None):
-                    ContainerCtl.resize(container['id'], container['resize'])
-                container['pid'] = ContainerCtl.get_pid(container['id'])
-                container['last_modify_time'] = time.time()
-                ContainerStatus.update_status([container], key='uuid')
+                    if container.get('resize', None):
+                        ContainerCtl.resize(container['id'], container['resize'])
+                    container['pid'] = ContainerCtl.get_pid(container['id'])
+                    container['last_modify_time'] = time.time()
+                    ContainerStatus.update_status([container], key='uuid')
 
             return create_containers_json, 201
 
