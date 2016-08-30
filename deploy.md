@@ -10,15 +10,16 @@ requirements:
 
 ```
     rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
-    yum install --enablerepo=elrepo-kernel kernel-lt
-    yum install --enablerepo=elrepo-kernel kernel-lt-{firmware,headers,devel}
+    yum -y install --enablerepo=elrepo-kernel kernel-lt
+    yum -y install --enablerepo=elrepo-kernel kernel-lt-{firmware,headers,devel}
+    yum -y install vim git
 ```
 
 * install docker
 
 ```
     curl -O -sSL https://get.docker.com/rpm/1.7.1/centos-7/RPMS/x86_64/docker-engine-1.7.1-1.el7.centos.x86_64.rpm
-    yum localinstall --nogpgcheck docker-engine-1.7.1-1.el7.x86_64.rpm
+    yum localinstall --nogpgcheck docker-engine-1.7.1-1.el7.centos.x86_64.rpm
 ```
 
 * config docker
@@ -81,7 +82,7 @@ echo "never" > /sys/kernel/mm/transparent_hugepage/defrag
 * set default eth name and default ip address
 
 ```
-    vim /var/www/dockerfly/dockerflyui/static/js/startup/controller.js
+    vim /var/www/dockerfly/dockerflyui/static/js/startup/controllers.js
 ```
 
 change eths config
