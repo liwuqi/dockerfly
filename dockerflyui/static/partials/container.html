@@ -13,6 +13,7 @@
         <a data-target="#" ng-model="collapsed" ng-click="changeCollapsed(container)" class="docker-container-item">
           <span>Name:{{container.container_name}}</span>
           <span>IP:{{container.eths[0][2]}}</span>
+          <span>:{{container.desc}}</span>
         </a>
         <div class="btn-group btn-status-control">
           <button class="btn {{container.status=='stopped' || 'disabled'}}" ng-click="startContainer(container)">运行</button>
