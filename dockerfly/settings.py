@@ -20,6 +20,7 @@ default_ippool_db = os.path.join(DB_ROOT, 'ippool.json')
 dbs = [default_container_db, default_ippool_db]
 
 TEST_MOTHER_ETH_NAME = 'ens33'
+SHM_SIZE = '4g'
 
 try:
     from local_settings import *
