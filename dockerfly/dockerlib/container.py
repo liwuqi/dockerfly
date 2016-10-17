@@ -47,7 +47,7 @@ class Container(object):
         return container_id
 
     @classmethod
-    def create(cls, image_name, run_cmd, container_name=None, shm_size=SHM_SIZE):
+    def create(cls, image_name, run_cmd, container_name=None):
         """create continer"""
         if not container_name:
             container_name = "dockerfly_%s_%s" % (image_name.replace(':','_').replace('/','_'),
@@ -55,8 +55,7 @@ class Container(object):
         try:
             container = cls.docker_cli.create_container(image=image_name,
                                                     command=run_cmd,
-                                                    name=container_name,
-                                                    host_config=cls.docker_cli.create_host_config(mem_limit=SHM_SIZE, privileged=True))
+                                                    name=container_name)
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
             raise ContainerActionError(str(e))
@@ -67,7 +66,8 @@ class Container(object):
     def start(cls, container_id, veths, gateway):
         """start eths and continer"""
         try:
-            cls.docker_cli.start(container=container_id
+            cls.docker_cli.start(container=container_id,
+                                 shm_size=SHM_SIZE, privileged=True
                                  #extra_hosts={'ldap.xxx.com.cn':'172.16.11.3'},
                                  )
         except dockerpy.errors.APIError as e:
