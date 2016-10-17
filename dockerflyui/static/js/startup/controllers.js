@@ -229,7 +229,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
             } else {
                 var alertModal = $modal({
                             title: 'Error',
-                            content: 'Invalid params, please check your input!',
+                            content: '参数未填全，请检查表单!',
                             show: false, backdrop: false});
                 alertModal.$promise.then(alertModal.show);
             }
