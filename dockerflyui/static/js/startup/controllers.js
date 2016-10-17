@@ -27,31 +27,27 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
               container_name: {
                   type: 'string',
                   default: 'bpc_for_cups',
-                  description: '设置你的项目名字，只支持英文'
+                  title : '设置你的项目名字，只支持英文'
               },
               gateway: {
                   type: 'string',
-                  title: 'Gateway',
                   default: '172.16.13.1',
                   pattern: '^(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))$',
-                  description: '设置网关',
+                  title : '设置网关',
                   validationMessage: " "
               },
               desc: {
                   type: 'string',
-                  title: 'Description',
                   default: 'xx银行\nhttp://kb.netis.com.cn:8090/pages/xxxxx',
-                  description: '对这个项目简要描述一下'
+                  title : '对这个项目简要描述一下'
               },
               run_cmd: {
                   type: 'string',
-                  title: 'container run cmd',
                   default: '/usr/bin/svscan /etc/dockerservices',
-                  description: '镜像启动命令，默认不用修改'
+                  title: '镜像启动命令，默认不用修改'
               },
               image_name: {
                   type: 'string',
-                  title: 'base image',
                   format: 'uiselect',
                   uiClass: 'short_select',
                   items: images,
@@ -59,39 +55,35 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                      refreshDelay: 100,
                      callback: $scope.refreshSelect
                    },
-                  description: '选择合适的镜像',
+                  title: '选择合适的镜像',
               },
               eths: {
                   type: 'array',
-                  title: 'add eths',
                   items: {
                       type: 'object',
                       properties: {
                           eth_name: {
                             type: 'string',
-                            title: 'eth name',
-                            default: 'v' + Math.floor(Date.now()/1000),
-                            description: '新建一个虚拟网卡 (eth1--eth100)',
+                            default: 'veth1',
+                            title: '新建一个虚拟网卡 (veth1--veth100)',
                           },
                           attach_to: {
                             type: 'string',
-                            title: 'mother eth',
                             default: 'eth1',
-                            description: '虚拟网卡的物理母卡，默认不用修改',
+                            title: '虚拟网卡的物理母卡，默认不用修改',
                           },
                           ip: {
                             type: 'string',
-                            title: 'set ip',
                             default: '0.0.0.0/24',
                             pattern: '^(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))/([1-2]\\d|3[0-2]|\\d)$',
                             validationMessage: " ",
-                            description: '虚拟网卡IP，如果设置为0.0.0.0/24则代表不分配IP,用于回放流量'
+                            title: '虚拟网卡IP，如果设置为0.0.0.0/24则代表不分配IP,用于回放流量'
                           },
                           promisc : {
-                            type: 'string',
+                            type: 'boolean',
                             title: '是否设为混杂模式',
-                            default: '否',
-                            enum: ['是', '否']
+                            default: false,
+                            enum: [true, false]
                           }
                       }
                   }
@@ -207,6 +199,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                         postParams.eths[i][0] = $scope.containerModel.eths[i]['eth_name'];
                         postParams.eths[i][1] = $scope.containerModel.eths[i]['attach_to'];
                         postParams.eths[i][2] = $scope.containerModel.eths[i]['ip'];
+                        postParams.eths[i][3] = $scope.containerModel.eths[i]['promisc'];
                 }
 
                 postParams['status'] = 'running';

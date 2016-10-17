@@ -29,8 +29,8 @@ class Container(object):
 
         Args:
             image_name: docker image name
-            veths: virtual eths, [('em0v0', 'em0', '192.168.159.10/24'),
-                                  ('em1v1', 'em1', '192.168.159.11/24')... )],
+            veths: virtual eths, [('em0v0', 'em0', '192.168.159.10/24', True),
+                                  ('em1v1', 'em1', '192.168.159.11/24', False)... )],
 
                    !!!notify!!!:
                    the first eth will be assigned to the default gateway for container
@@ -65,17 +65,20 @@ class Container(object):
     @classmethod
     def start(cls, container_id, veths, gateway):
         """start eths and continer"""
+        if len(veths) > 0 and len(veths[0]) < 4:
+            map(lambda veth: veth.append(False), veths)
         try:
             cls.docker_cli.start(container=container_id,
                                  shm_size=SHM_SIZE, privileged=True
+                                 #privileged=True
                                  #extra_hosts={'ldap.xxx.com.cn':'172.16.11.3'},
                                  )
         except dockerpy.errors.APIError as e:
             logger.error(traceback.format_exc())
             raise ContainerActionError(str(e))
 
-        for index, (veth, link_to, ip_netmask) in enumerate(veths):
-            macvlan_eth = MacvlanEth(veth, ip_netmask, link_to).create()
+        for index, (veth, link_to, ip_netmask, is_promisc) in enumerate(veths):
+            macvlan_eth = MacvlanEth(veth, ip_netmask, link_to, is_promisc).create()
             if index == 0:
                 macvlan_eth.attach_to_container(container_id,
                                                 is_route=True, gateway=gateway)

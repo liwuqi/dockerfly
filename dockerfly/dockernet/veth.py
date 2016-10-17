@@ -22,7 +22,7 @@ class VEth(object):
 
     docker_cli = dockerpy.Client(base_url='unix://var/run/docker.sock', timeout=300)
 
-    def __init__(self, name, ip_netmask, link_to):
+    def __init__(self, name, ip_netmask, link_to, is_promisc=False):
         """
 
         Args:
@@ -34,6 +34,7 @@ class VEth(object):
         self._veth_name = name
         self._ip_netmask = ip_netmask
         self._link_to = link_to
+        self._is_promisc = is_promisc
 
     def attach_to_container(self, container_id):
         raise NotImplementedError
@@ -69,8 +70,8 @@ class MacvlanEth(VEth):
     if ip='0.0.0.0/0', don't set ip address
     """
 
-    def __init__(self, name, ip, link_to):
-        super(MacvlanEth, self).__init__(name, ip, link_to)
+    def __init__(self, name, ip, link_to, is_promisc=False):
+        super(MacvlanEth, self).__init__(name, ip, link_to, is_promisc)
         self._is_attach_to_container = False
         self._attach_to_container_id = None
 
@@ -91,6 +92,11 @@ class MacvlanEth(VEth):
                        'ip', 'link', 'del', self._veth_name)
             else:
                 ip('link', 'set', self._veth_name, 'up')
+
+            if self._is_promisc:
+                docker('exec', self._attach_to_container_id,
+                       'ip', 'link', 'set', self._veth_name, 'promisc', 'on')
+
         except Exception as e:
             raise VEthUpException("up macvlan eth error:\n{}".format(e.message))
         return self
@@ -140,6 +146,10 @@ class MacvlanEth(VEth):
                        'ip', 'route', 'del', 'default')
                 docker('exec', self._attach_to_container_id,
                        'ip', 'route', 'add', 'default', 'via', gateway, 'dev', self._veth_name)
+
+                if self._is_promisc:
+                    docker('exec', self._attach_to_container_id,
+                       'ip', 'link', 'set', self._veth_name, 'promisc', 'on')
                 #arping my gateway, cause the gateway to flush the ARP cache for my IP address
                 try:
                     docker('exec', self._attach_to_container_id,

@@ -50,7 +50,8 @@ class ContainerList(Resource):
                     [
                         "testDockerflyv0",
                         "eth0",
-                        "172.16.11.239/24"
+                        "172.16.11.239/24",
+                        "promiesc": True
                     ]
                 ],
                 "gateway": "172.16.11.1",
