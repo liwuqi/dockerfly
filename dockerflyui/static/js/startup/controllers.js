@@ -26,29 +26,28 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
             properties: {
               container_name: {
                   type: 'string',
-                  title: 'Name',
-                  default: 'yourname_projectname_for_xxx',
-                  description: 'set your container name'
+                  default: 'bpc_for_cups',
+                  description: '设置你的项目名字，只支持英文'
               },
               gateway: {
                   type: 'string',
                   title: 'Gateway',
                   default: '172.16.13.1',
                   pattern: '^(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))$',
-                  description: 'please set the gateway',
+                  description: '设置网关',
                   validationMessage: " "
               },
               desc: {
                   type: 'string',
                   title: 'Description',
-                  default: 'integration test',
-                  description: 'please add desc for you container'
+                  default: 'xx银行\nhttp://kb.netis.com.cn:8090/pages/xxxxx',
+                  description: '对这个项目简要描述一下'
               },
               run_cmd: {
                   type: 'string',
                   title: 'container run cmd',
                   default: '/usr/bin/svscan /etc/dockerservices',
-                  description: 'set your container run command'
+                  description: '镜像启动命令，默认不用修改'
               },
               image_name: {
                   type: 'string',
@@ -60,7 +59,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                      refreshDelay: 100,
                      callback: $scope.refreshSelect
                    },
-                  description: 'select your base image of container',
+                  description: '选择合适的镜像',
               },
               eths: {
                   type: 'array',
@@ -70,20 +69,29 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                       properties: {
                           eth_name: {
                             type: 'string',
-                            title: 'new eth',
+                            title: 'eth name',
                             default: 'v' + Math.floor(Date.now()/1000),
+                            description: '新建一个虚拟网卡 (eth1--eth100)',
                           },
                           attach_to: {
                             type: 'string',
-                            title: 'attach to which mother eth',
-                            default: 'eth1'
+                            title: 'mother eth',
+                            default: 'eth1',
+                            description: '虚拟网卡的物理母卡，默认不用修改',
                           },
                           ip: {
                             type: 'string',
                             title: 'set ip',
-                            default: '172.16.13.100/24',
+                            default: '0.0.0.0/24',
                             pattern: '^(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))/([1-2]\\d|3[0-2]|\\d)$',
-                            validationMessage: " "
+                            validationMessage: " ",
+                            description: '虚拟网卡IP，如果设置为0.0.0.0/24则代表不分配IP,用于回放流量'
+                          },
+                          promisc : {
+                            type: 'string',
+                            title: '是否设为混杂模式',
+                            default: '否',
+                            enum: ['是', '否']
                           }
                       }
                   }
@@ -102,7 +110,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
           $scope.form = [
             {
                 type: 'help',
-                helpvalue: '<div class="alert alert-info">set up your container</div>'
+                helpvalue: '<div class="alert alert-info">定制Docker虚机</div>'
             },
             {
                 htmlClass: 'row',
@@ -110,34 +118,31 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                 items: [
                     {
                         type: 'section',
-                        htmlClass: 'col-md-4',
+                        htmlClass: 'col-md-12',
                         items: [
                             'container_name',
                         ]
                     },
                     {
                         type: 'section',
-                        htmlClass: 'col-md-4',
+                        htmlClass: 'col-md-12',
                         items: [
                             'run_cmd',
                         ]
                     },
-                    {
-                        type: 'section',
-                        htmlClass: 'col-md-4',
-                        items: [
-                            'desc',
-                        ]
-                    },
                 ]
             },
-             {
+            {
+                key: 'desc',
+                type: 'textarea',
+            },
+            {
                key: 'image_name',
                placeholder: 'please select your docker image',
-             },
+            },
             {
                 type: 'help',
-                helpvalue: '<div class="alert alert-info">custom your container network</div>'
+                helpvalue: '<div class="alert alert-info">定制虚拟网络</div>'
             },
             {
                 htmlClass: 'row',
