@@ -135,6 +135,11 @@ class MacvlanEth(VEth):
             if '0.0.0.0' not in self._ip_netmask:
                 docker('exec', self._attach_to_container_id,
                        'ip', 'addr', 'add', self._ip_netmask, 'dev', self._veth_name)
+
+            if self._is_promisc:
+                docker('exec', self._attach_to_container_id,
+                   'ip', 'link', 'set', self._veth_name, 'promisc', 'on')
+
         except Exception as e:
             raise VEthAttachException("attach macvlan eth error:\n{}".format(e.message))
 
@@ -147,9 +152,6 @@ class MacvlanEth(VEth):
                 docker('exec', self._attach_to_container_id,
                        'ip', 'route', 'add', 'default', 'via', gateway, 'dev', self._veth_name)
 
-                if self._is_promisc:
-                    docker('exec', self._attach_to_container_id,
-                       'ip', 'link', 'set', self._veth_name, 'promisc', 'on')
                 #arping my gateway, cause the gateway to flush the ARP cache for my IP address
                 try:
                     docker('exec', self._attach_to_container_id,
