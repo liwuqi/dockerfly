@@ -77,7 +77,7 @@ startupControllers.controller('FormController', ['$scope', '$http', '$timeout', 
                             default: '0.0.0.0/24',
                             pattern: '^(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))/([1-2]\\d|3[0-2]|\\d)$',
                             validationMessage: " ",
-                            title: '虚拟网卡IP，如果设置为0.0.0.0/24则代表不分配IP,用于回放流量'
+                            title: '虚拟网卡IP，如果设置为0.0.0.0/24则代表不分配IP,用于回放流量,用于回放流量，第一块卡为通信口，请为他分配一个可用IP'
                           },
                           promisc : {
                             type: 'boolean',
