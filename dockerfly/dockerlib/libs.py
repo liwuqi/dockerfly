@@ -26,8 +26,7 @@ def get_all_containers():
           'Ports': [],
           'Status': 'Up 1 seconds'}]
     """
-    containers = [c for c in docker_cli.containers() if c['Image']]
-    return containers
+    return docker_cli.containers()
 
 def get_all_containers_id():
     return [item['Id'] for item in get_all_containers()]

@@ -41,7 +41,7 @@ class ImageList(Resource):
         return jsonify(
                         {
                             'images':
-                            [item['RepoTags'][0] for item in docker_cli.images()]
+                            [item['RepoTags'][0] for item in docker_cli.images() if item['RepoTags']]
                         }
                     )
 
