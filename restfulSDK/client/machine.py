@@ -16,8 +16,6 @@ from .remote import (RemoteEnv,
                      CheckDirEmptyRemoteTask,
                      DelFileFromRemoteTask)
 
-from .supervisor.rpc import SupervisorRpcClient
-
 def check_if_running(func):
     def _check(*arg, **kws):
         if arg[0].status != VMStatus.RUNNING:
@@ -70,8 +68,6 @@ class VMachine(object):
 
         if self.status == VMStatus.RUNNING:
             self._env = RemoteEnv(self._ip.split('/')[0], self._user, self._password)
-
-        self._supervisor = SupervisorRpcClient(self._ip.split('/')[0])
 
     def create(self):
         if self.status == VMStatus.NOPRESENT:
@@ -176,6 +172,3 @@ class VMachine(object):
     def project(self):
         return self._project
 
-    @property
-    def supervisor(self):
-        return self._supervisor
